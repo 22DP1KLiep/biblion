@@ -17,4 +17,7 @@ export default defineConfig({
             },
         }),
     ],
+    esbuild: {
+        target: 'es2015'  // Ensure ES6+ features like Promises are supported
+    }
 });

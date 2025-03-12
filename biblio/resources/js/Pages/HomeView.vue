@@ -2,10 +2,9 @@
     <div>
         <Navbar />
         <main>
-            <!-- SLIDER SĀKUMS SLIDER SĀKUMS SLIDER SĀKUMS SLIDER SĀKUMS SLIDER SĀKUMS -->
-
+            <!-- SLIDER SECTION -->
             <div class="slideshow-container">
-                <div class="mySlides fade" v-for="(slide, index) in slides" :key="index" :class="{ active: index === currentSlide }">
+                <div v-for="(slide, index) in slides" :key="index" class="mySlides" :class="{ active: index === currentSlide }">
                     <div class="numbertext">{{ index + 1 }} / {{ slides.length }}</div>
                     <img :src="slide.src" alt="Slide Image" />
                     <div class="text">{{ slide.caption }}</div>
@@ -13,35 +12,28 @@
                 <a class="prev" @click="changeSlide(-1)">&#10094;</a>
                 <a class="next" @click="changeSlide(1)">&#10095;</a>
             </div>
-            <br />
-            <div style="text-align:center">
-                <span class="dot" v-for="(slide, index) in slides" :key="index" @click="currentSlide = index" :class="{ active: index === currentSlide }"></span>
+            <div class="dots-container">
+                <span v-for="(slide, index) in slides" :key="index" class="dot" @click="currentSlide = index" :class="{ active: index === currentSlide }"></span>
             </div>
-            <!-- SLIDER BEIGAS SLIDER BEIGAS SLIDER BEIGAS SLIDER BEIGAS SLIDER BEIGAS -->
+
             <div class="intro-text">
                 "Lasīt grāmatas ir kā ceļot laikā un telpā – un šeit Tu vari atrast savu nākamo galamērķi!"
             </div>
 
-<!--            <div class="virsraksti">-->
-<!--                Populārākie Žanri-->
-<!--            </div>-->
-            <div class="genre-section">
-                <div v-for="genre in genres" :key="genre.name" class="genre-card" @click="selectGenre(genre.name)">
-                    <img :src="genre.image" :alt="genre.name" class="genre-image" />
-                    <div class="genre-name">{{ genre.name }}</div>
-                </div>
-            </div>
+            <showBook />
         </main>
         <Footer />
     </div>
 </template>
 
 <script>
-import Navbar from "../components/Navbar.vue";
-import Footer from "../components/Footer.vue";
+import Navbar from "../Components/navbar.vue";
+import Footer from "../Components/footer.vue";
+import ShowBook from "@/Components/showBook.vue";
 
 export default {
     components: {
+        ShowBook,
         Navbar,
         Footer,
     },
@@ -50,150 +42,81 @@ export default {
             currentSlide: 0,
             slides: [
                 { src: "/img/hand-drawn-book-club-facebook-cover-b.png" },
-                { src: "/img/hand-drawn-book-club-twitch-banner-template.png" },
-                { src: "/img/1.jpg" },
+                { src: "/img/hand-drawn-book-club-twitch-banner-template.png"},
+                { src: "/img/1.jpg"},
             ],
-            genres: [
-                { name: "Fantāzija", image: "/img/fantasy.jpg" },
-                { name: "Detektīvi", image: "/img/detective.jpg" },
-                { name: "Romāni", image: "/img/romance.jpg" },
-                { name: "Zinātniskā fantastika", image: "/img/scifi.jpg" },
-                { name: "Vēsturiskie", image: "/img/history.jpg" },
-            ],
+            books: [
+                { title: "TOP 1", image: "/img/1984_george_orwell.jpg", description: "\"1984\" – George Orwell" },
+                { title: "TOP 2", image: "/img/ToKillAMockingbird_HarperLee.jpg", description: "\"To Kill a Mockingbird\" – Harper Lee" },
+                { title: "TOP 3", image: "/img/TheGreatGatsby_FScottFitzgerald.jpg", description: "\"The Great Gatsby\" – F. Scott Fitzgerald" },
+                { title: "TOP 4", image: "/img/PrideAndPrejustice_JaneAustin.jpg", description: "\"Pride and Prejudice\" – Jane Austen" },
+                { title: "TOP 5", image: "/img/MobyDick_HermanMelville.jpg", description: "\"Moby-Dick\" – Herman Melville" },
+                { title: "TOP 6", image: "/img/100YearsOfSolitude_GGMarquez.jpg", description: "\"One Hundred Years of Solitude\" – Gabriel García Márquez" },
+                { title: "TOP 7", image: "/img/WarAndPeace_LTolstoy.jpg", description: "\"War and Peace\" – Leo Tolstoy" },
+                { title: "TOP 8", image: "/img/TheCatherInTheRye_JDSalinger.jpg", description: "\"The Catcher in the Rye\" – J.D. Salinger" },
+                { title: "TOP 9", image: "/img/LordOfTheRings_JRRTolken.jpg", description: "\"The Lord of the Rings\" – J.R.R. Tolkien" },
+                { title: "TOP 10", image: "/img/BrothersKaramazov_FDostoevsky.jpg", description: "\"The Brothers Karamazov\" – Fyodor Dostoevsky" }
+            ]
         };
     },
     methods: {
         changeSlide(n) {
             this.currentSlide = (this.currentSlide + n + this.slides.length) % this.slides.length;
-        },
-        showSlides() {
-            this.changeSlide(1);
-        },
-        selectGenre(genre) {
-            console.log("Selected genre:", genre);
-        },
+        }
     },
     mounted() {
-        setInterval(this.showSlides, 3000);
-    },
+        setInterval(() => {
+            this.changeSlide(1);
+        }, 3000);
+    }
 };
 </script>
 
 <style scoped>
-/* SLIDER SAKUMS SLIDER SAKUMS SLIDER SAKUMS SLIDER SAKUMS SLIDER SAKUMS */
-* {
-    box-sizing: border-box;
-}
-
-.main-content {
-    padding-top: 150px; /* Increased value to move the slideshow lower */
-}
-
-/* Slideshow container */
 .slideshow-container {
-    padding: 0;
     max-width: 1200px;
-    height: 500px; /* Increased height for a bigger display */
+    height: 500px;
     position: relative;
-    margin: 40px auto; /* Moves it down */
-    margin-bottom: 0;
+    margin: 40px auto;
     border: 2px solid #ccc;
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    /* background: linear-gradient(to bottom, #D8C4B6,#D8C4B6); Smooth background */
 }
-
-/* Hide the images by default */
 .mySlides {
     display: none;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
 }
-
-.mySlides img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain; /* Ensures full image visibility */
-    object-position: center; /* Centers the image */
-    background-color:#F5EFE7; /* Adds a background in case the image doesn't fill */
-}
-
-@media (max-width: 768px) {
-    .slideshow-container {
-        height: 300px; /* Reduce size on mobile */
-    }
-
-    .mySlides img {
-        height: 100%;
-        object-fit: contain;
-    }
-}
-
-/* Show the active slide */
 .mySlides.active {
     display: block;
 }
-
-/* Style for the images */
-.slide-image {
-    width: 100%; /* Ensure the image takes up the full width of the container */
-    height: 100%; /* Maintain aspect ratio */
-    object-fit: cover; /* Ensure images cover the area without distortion */
+.mySlides img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background-color: #F5EFE7;
 }
-
-/* Next & previous buttons */
-.prev,
-.next {
+.prev, .next {
     cursor: pointer;
     position: absolute;
     top: 50%;
-    width: auto;
-    margin-top: -22px;
+    transform: translateY(-50%);
     padding: 16px;
     color: white;
-    font-weight: bold;
     font-size: 18px;
     transition: 0.6s ease;
-    border-radius: 0 3px 3px 0;
+    border-radius: 3px;
     user-select: none;
 }
-
-/* Position the "next button" to the right */
 .next {
     right: 0;
-    border-radius: 3px 0 0 3px;
 }
-
-/* On hover, add a black background color with a little bit see-through */
-.prev:hover,
-.next:hover {
-    background-color: rgba(0, 0, 0, 0.8);
+.prev:hover, .next:hover {
+    background-color: rgba(255, 255, 255, 0.8);
 }
-
-/* Caption text */
-.text {
-    color: #f2f2f2;
-    font-size: 15px;
-    padding: 8px 12px;
-    position: absolute;
-    bottom: 8px;
-    width: 100%;
+.dots-container {
     text-align: center;
-    /* background-color: rgba(0, 0, 0, 0.5); Semi-transparent background for better readability */
+    margin-top: 10px;
 }
-
-/* Number text (1/3 etc) */
-.numbertext {
-    color: #f2f2f2;
-    font-size: 12px;
-    padding: 8px 12px;
-    position: absolute;
-    top: 0;
-}
-
-/* The dots/bullets/indicators */
 .dot {
     cursor: pointer;
     height: 15px;
@@ -203,101 +126,42 @@ export default {
     border-radius: 50%;
     display: inline-block;
     transition: background-color 0.6s ease;
-
-    position: relative;
-    top: -3px; /* Move the dots slightly up */
 }
-
-.active,
-.dot:hover {
-    background-color: #717171;
+.active, .dot:hover {
+    background-color: #ffffff;
 }
-
-/* Fading animation */
-.fade {
-    animation-name: fade;
-    animation-duration: 1.5s;
-}
-
-@keyframes fade {
-    from { opacity: .4 }
-    to { opacity: 1 }
-}
-/* SLIDER BEIGAS SLIDER BEIGAS SLIDER BEIGAS SLIDER BEIGAS SLIDER BEIGAS */
 .intro-text {
-    font-size: 32px; /* Lielāki burti */
-    font-weight: bold; /* Treknraksts */
+    font-size: 24px;
+    font-weight: bold;
     text-align: center;
-    max-width: 700px;
-    padding: 30px;
     margin: 50px auto;
-    border-radius: 15px;
-    color: rgb(3, 1, 1);
-
-    /* Interesants gradienta fons */
-
+    max-width: 700px;
 }
-
-.virsraksti {
-    font-size: 24px; /* Lielāki burti */
-    font-weight: bold; /* Treknraksts */
-    text-align: left; /* Teksts ir kreisajā pusē */
-    margin-left: 0; /* Atstāj nulles attālumu no kreisās malas */
-    padding-left: 20px; /* Nedaudz ievilkums, lai nebūtu tieši pie malas */
-    color: #213555; /* Teksta krāsa */
-    position: relative; /* Lai varētu izmantot pseido-elementu */
-
-    /* Līnija zem teksta */
+.book-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    max-width: 6000px;
+    margin: 75px;
 }
-
-.virsraksti::after {
-    content: "";
-    position: absolute;
-    bottom: 10px; /* Attālums no teksta līdz līnijai */
-    margin-left: 20px; /* Increase the margin to move the line to the right */
-    width: 40%;
-    height: 2px; /* Līnijas biezums */
-    background-color: #213555; /* Līnijas krāsa */
-}
-.genre-section {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 20px;
-    margin: 30px 20px;
-}
-
-.genre-card {
-    width: 180px;
-    height: 250px;
-    border-radius: 12px;
-    overflow: hidden;
-    position: relative;
-    cursor: pointer;
+.book-card {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transition: transform 0.3s ease;
+    text-align: center;
+    transition: transform 0.3s;
 }
-
-.genre-card:hover {
+.book-card:hover {
     transform: scale(1.05);
 }
-
-.genre-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.genre-name {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    color: white;
-    text-align: center;
-    padding: 10px;
-    font-size: 18px;
+.book-title {
     font-weight: bold;
+    margin-top: 10px;
 }
-
+.top10{
+    Font-weight: bold;
+    text-align: center;
+    font-size: 35px;
+}
 </style>

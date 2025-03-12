@@ -3,13 +3,13 @@
         <div class="title">
             Login Form
         </div>
-        <form action="#">
+        <form @submit.prevent="submit">
             <div class="field">
-                <input type="text" required>
+                <input type="email" v-model="form.email" required>
                 <label>Email Address</label>
             </div>
             <div class="field">
-                <input type="password" required>
+                <input type="password" v-model="form.password" required>
                 <label>Password</label>
             </div>
             <div class="content">
@@ -31,6 +31,21 @@
     </div>
 </template>
 
+<script setup>
+import {route} from "ziggy-js";
+import { Head, Link, useForm } from '@inertiajs/vue3';
+
+const form = useForm({
+    email: '',
+    password: '',
+    remember: false,
+});
+const submit = () => {
+    form.post(route('login'), {
+        onFinish: () => form.reset('password'),
+    });
+};
+</script>
 
 <style>
 @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');

@@ -17,20 +17,24 @@ Route::get('/login', function () {
 Route::get('/reg', function () {
     return Inertia::render('Auth/Register');
 })->name('reg');
-//
-//Route::get('/', function () {
-//    return Inertia::render('HomeView');
-//})->name('home');
-//
-//Route::get('/', function () {
-//    return Inertia::render('HomeView');
-//})->name('home');
-//
-//Route::get('/', function () {
-//    return Inertia::render('HomeView');
-//})->name('home');
+
+Route::get('/kabinets', function () {
+    return Inertia::render('KabinetsView');
+})->name('kabinets');
+
+Route::get('/gramatas', function () {
+    return Inertia::render('GramatasView');
+})->name('gramatas');
+
+//Route::get('/jaunumi', function () {
+//    return Inertia::render('JaunumiView');
+//})->name('jaunumi');
 
 
+use App\Http\Controllers\BookController;
+
+Route::get('/books', [BookController::class, 'index']);
+Route::get('/get/all/books', [BookController::class, 'get_all']);
 
 
 //Route::get('/', function () {

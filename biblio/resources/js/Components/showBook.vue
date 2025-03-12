@@ -1,0 +1,48 @@
+<template>
+    <div class="container mx-auto p-4">
+        <h1 class="text-2xl font-bold mb-4 text-center">Top 10 Books</h1>
+
+        <div v-if="books.length" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div v-for="book in books" :key="book.id" class="p-4 bg-white rounded-lg shadow-lg">
+                <img
+                    :src="book.image || 'https://via.placeholder.com/150'"
+                    :alt="book.title"
+                    class="w-full h-48 object-cover rounded-md mb-4"
+                >
+                <h2 class="text-lg font-semibold">{{ book.title }}</h2>
+                <p class="text-gray-600 text-sm">by {{ book.author }}</p>
+                <p class="text-sm mt-2 text-gray-700">{{ book.description }}</p>
+            </div>
+        </div>
+
+        <p v-else class="text-gray-500 text-center">Loading books...</p>
+    </div>
+</template>
+
+<script>
+import axios from 'axios';
+
+export default {
+    data() {
+        return {
+            books: [],
+        };
+    },
+    mounted() {
+        axios.get('/books')
+            .then(response => {
+                this.books = response.data; // Get only top 10 books
+            })
+            .catch(error => {
+                console.error('Error fetching books:', error);
+            });
+    }
+};
+</script>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+}
+</style>

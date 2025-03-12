@@ -20,9 +20,8 @@ const toggleNav = () => {
         </div>
         <ul>
 
-            <li><a href="/about">Grāmatas</a></li>
-            <li><a href="/contact">Žanri</a></li>
-            <li><a href="/tutor">Mans kabinets</a></li>
+            <li><a href="/gramatas">Grāmatas</a></li>
+            <li><a href="/kabinets">Mans kabinets</a></li>
             <li><a href="/login">Login</a></li>
         </ul>
         <!-- Hamburger Menu -->
@@ -36,9 +35,9 @@ const toggleNav = () => {
     <div class="menubar" :class="{ active: isMenuActive }">
         <ul>
 
-            <li><a href="/about">Grāmatas</a></li>
+            <li><a href="/gramatas">Grāmatas</a></li>
             <li><a href="/contact">Žanri</a></li>
-            <li><a href="/tutor">Mans kabinets</a></li>
+            <li><a href="/kabinets">Mans kabinets</a></li>
             <li><a href="/market">Market</a></li>
             <li><a href="/login">Login</a></li>
             <!--            <li><a :href="routes.login">Login</a></li>-->

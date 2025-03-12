@@ -1,20 +1,18 @@
 <template>
     <div class="wrapper">
-        <div class="title">
-            Register Form
-        </div>
-        <form action="#">
+        <div class="title">Register Form</div>
+        <form @submit.prevent="submit">
             <div class="field">
-                <input type="text" required>
+                <input type="email" v-model="form.email" required>
                 <label>Email Address</label>
             </div>
             <div class="field">
-                <input type="password" required>
+                <input type="password" v-model="form.password" required>
                 <label>Password</label>
             </div>
             <div class="field">
-                <input type="password" required>
-                <label>Password</label>
+                <input type="password" v-model="form.password_confirmation" required>
+                <label>Confirm Password</label>
             </div>
             <div class="content">
                 <div class="checkbox">
@@ -28,10 +26,30 @@
             <div class="field">
                 <input type="submit" value="Register">
             </div>
-
+<!--            <p v-if="errorMessage" class="error">{{ errorMessage }}</p>-->
+<!--            <p v-if="successMessage" class="success">{{ successMessage }}</p>-->
         </form>
     </div>
 </template>
+<script setup>
+import { Head, Link, useForm } from '@inertiajs/vue3';
+import {route} from "ziggy-js";
+
+const form = useForm({
+    // name: '',
+    email: '',
+    password: '',
+    password_confirmation: '',
+});
+
+const submit = () => {
+    form.post(route('register'), {
+        onError: (errors) => console.log(errors),
+        onFinish: () => form.reset('password', 'password_confirmation'),
+    });
+};
+
+</script>
 
 
 <style>
@@ -41,6 +59,18 @@
     padding: 0;
     box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
+}
+
+/* Add error and success message styles */
+.error {
+    color: red;
+    margin-top: 10px;
+    text-align: center;
+}
+.success {
+    color: green;
+    margin-top: 10px;
+    text-align: center;
 }
 html,body{
     display: grid;
