@@ -2,7 +2,7 @@
     <div>
         <Navbar />
         <main>
-            <!-- SLIDER SECTION -->
+            <!-- SLIDER SECTION  -->
             <div class="slideshow-container">
                 <div v-for="(slide, index) in slides" :key="index" class="mySlides" :class="{ active: index === currentSlide }">
                     <div class="numbertext">{{ index + 1 }} / {{ slides.length }}</div>
