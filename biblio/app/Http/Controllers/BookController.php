@@ -21,4 +21,10 @@ class BookController extends Controller
     {
         return response()->json(Book::all());
     }
+
+    public function show($id)
+    {
+        $book = Book::findOrFail($id);
+        return response()->json($book);
+    }
 }
