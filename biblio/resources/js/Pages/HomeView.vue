@@ -16,15 +16,12 @@
                 <span v-for="(slide, index) in slides" :key="index" class="dot" @click="currentSlide = index" :class="{ active: index === currentSlide }"></span>
             </div>
 
-            <Partners />
-
             <div class="intro-text">
                 "Lasīt grāmatas ir kā ceļot laikā un telpā – un šeit Tu vari atrast savu nākamo galamērķi!"
             </div>
 
             <showBook />
         </main>
-        <Testimonial />
         <Footer />
     </div>
 </template>
@@ -33,13 +30,9 @@
 import Navbar from "../Components/navbar.vue";
 import Footer from "../Components/footer.vue";
 import ShowBook from "@/Components/showBook.vue";
-import Testimonial from "@/Components/Testimonial.vue";
-import Partners from "@/Components/Partners.vue";
 
 export default {
     components: {
-        Partners,
-        Testimonial,
         ShowBook,
         Navbar,
         Footer,
@@ -172,3 +165,4 @@ export default {
     font-size: 35px;
 }
 </style>
+    

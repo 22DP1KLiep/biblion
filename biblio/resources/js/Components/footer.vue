@@ -8,8 +8,8 @@
         <div class="footer-container">
             <div class="footer-contact">
                 <h3>Contact Us</h3>
-                <p>Email: biblio@example.com</p>
-                <p>Phone: +371 45 678 900</p>
+                <p>Email: info@example.com</p>
+                <p>Phone: +123 456 7890</p>
             </div>
             <div class="footer-social">
                 <h3>Follow Us</h3>
