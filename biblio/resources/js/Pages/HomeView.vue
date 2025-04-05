@@ -19,9 +19,10 @@
             <div class="intro-text">
                 "Lasīt grāmatas ir kā ceļot laikā un telpā – un šeit Tu vari atrast savu nākamo galamērķi!"
             </div>
-
+            <Partners />
             <showBook />
         </main>
+        <Testimonial />
         <Footer />
     </div>
 </template>
@@ -30,9 +31,13 @@
 import Navbar from "../Components/navbar.vue";
 import Footer from "../Components/footer.vue";
 import ShowBook from "@/Components/showBook.vue";
+import Partners from "@/Components/Partners.vue";
+import Testimonial from "@/Components/Testimonial.vue";
 
 export default {
     components: {
+        Testimonial,
+        Partners,
         ShowBook,
         Navbar,
         Footer,

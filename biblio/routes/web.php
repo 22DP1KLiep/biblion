@@ -31,12 +31,19 @@ Route::get('/gramatas', function () {
 //})->name('jaunumi');
 
 
+Route::get('/book/{id}', function ($id) {
+    return Inertia::render('Book', ['id' => $id]);
+});
+
 use App\Http\Controllers\BookController;
 
 Route::get('/books', [BookController::class, 'index']);
 Route::get('/get/all/books', [BookController::class, 'get_all']);
 
 
+
+// for specific book description
+Route::get('/books/{id}', [BookController::class, 'show']);
 //Route::get('/', function () {
 //    return Inertia::render('Welcome', [
 //        'canLogin' => Route::has('login'),
