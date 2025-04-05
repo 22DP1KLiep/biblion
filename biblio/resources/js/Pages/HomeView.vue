@@ -22,6 +22,7 @@
 
             <showBook />
         </main>
+        <Testimonial />
         <Footer />
     </div>
 </template>
@@ -30,9 +31,11 @@
 import Navbar from "../Components/navbar.vue";
 import Footer from "../Components/footer.vue";
 import ShowBook from "@/Components/showBook.vue";
+import Testimonial from "@/Components/Testimonial.vue";
 
 export default {
     components: {
+        Testimonial,
         ShowBook,
         Navbar,
         Footer,
@@ -165,4 +168,3 @@ export default {
     font-size: 35px;
 }
 </style>
-    
