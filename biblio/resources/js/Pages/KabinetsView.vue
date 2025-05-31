@@ -1,97 +1,112 @@
 <template>
-    <Navbar />
-    <div class="container">
-        <!-- Left Sorting Sidebar -->
-        <div class="sidebar">
-            <h2>Kabineta kārtošana:</h2>
+    <div>
+        <Navbar />
+        <div v-if="$page.props.auth.user">
+            <!-- Lietotāja kabineta saturs -->
+            <div class="container">
+                <!-- Left Sorting Sidebar -->
+                <div class="sidebar">
+                    <h2>Laipni lūdzam, {{ $page.props.auth.user.username }}!</h2>
+                    <!-- 🔥 Logout poga -->
+                    <button @click="logout" class="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+                        Izrakstīties
+                    </button>
+                    <h3>Kabineta kārtošana:</h3>
 
-            <!-- Mapes Sorting -->
-            <div class="sort-section">
-                <h3 @click="showMoreMapes = !showMoreMapes" class="toggle-header">
-                    Mapes <span>{{ showMoreMapes ? "▲" : "▼" }}</span>
-                </h3>
-                <div v-for="(folder, index) in visibleMapes" :key="index" class="list__item">
-                    <label class="label--checkbox">
-                        <input type="checkbox" class="checkbox" v-model="selectedMapes" :value="folder" />
-                        {{ folder }}
-                    </label>
-                </div>
-                <div v-if="showMoreMapes">
-                    <div v-for="(folder, index) in hiddenMapes" :key="'hidden-' + index" class="list__item">
-                        <label class="label--checkbox">
-                            <input type="checkbox" class="checkbox" v-model="selectedMapes" :value="folder" />
-                            {{ folder }}
-                        </label>
-                    </div>
-                </div>
-
-                <!-- New Folder Creation -->
-                <div class="new-folder">
-                    <input type="text" v-model="newMape" placeholder="Jauna mape..." />
-                    <button @click="addMape" class="create-btn">Pievienot</button>
-                </div>
-            </div>
-
-            <!-- Žanrs Sorting -->
-            <div class="sort-section">
-                <h3 @click="showMoreGenres = !showMoreGenres" class="toggle-header">
-                    Žanrs <span>{{ showMoreGenres ? "▲" : "▼" }}</span>
-                </h3>
-                <div v-for="(genre, index) in visibleGenres" :key="index" class="list__item">
-                    <label class="label--checkbox">
-                        <input type="checkbox" class="checkbox" v-model="selectedGenres" :value="genre" />
-                        {{ genre }}
-                    </label>
-                </div>
-                <div v-if="showMoreGenres">
-                    <div v-for="(genre, index) in hiddenGenres" :key="'hidden-' + index" class="list__item">
-                        <label class="label--checkbox">
-                            <input type="checkbox" class="checkbox" v-model="selectedGenres" :value="genre" />
-                            {{ genre }}
-                        </label>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Right Main Content Area for Books -->
-        <div class="main-content">
-            <h1>Visas grāmatas</h1>
-            <p><strong>Atlasītās mapes:</strong> {{ selectedMapes.join(", ") || "Nav atlasītas" }}</p>
-            <p><strong>Atlasītie žanri:</strong> {{ selectedGenres.join(", ") || "Nav atlasīti" }}</p>
-
-            <div class="book-list">
-                <!-- Grāmatu saraksts -->
-                <div v-for="(book, index) in filteredBooks" :key="index" class="book-card">
-                    <div class="book-info">
-                        <!-- Grāmatas attēls un nosaukums, autors -->
-                        <img :src="book.cover" alt="Book Cover" class="book-cover" />
-                        <div class="book-text">
-                            <h3>{{ book.title }}</h3>
-                            <p><strong>Autors:</strong> {{ book.author }}</p>
-
-                            <!-- Zvaigžņu vērtēšana -->
-                            <div class="rating">
-                <span v-for="star in 5" :key="star" @click="rateBook(index, star)">
-                  {{ star <= book.rating ? "⭐" : "☆" }}
-                </span>
+                    <!-- Mapes -->
+                    <div class="sort-section">
+                        <h3 @click="showMoreMapes = !showMoreMapes" class="toggle-header">
+                            Mapes <span>{{ showMoreMapes ? '▲' : '▼' }}</span>
+                        </h3>
+                        <div v-for="(folder, index) in visibleMapes" :key="index" class="list__item">
+                            <label class="label--checkbox">
+                                <input type="checkbox" class="checkbox" v-model="selectedMapes" :value="folder" />
+                                {{ folder }}
+                            </label>
+                        </div>
+                        <div v-if="showMoreMapes">
+                            <div v-for="(folder, index) in hiddenMapes" :key="'hidden-' + index" class="list__item">
+                                <label class="label--checkbox">
+                                    <input type="checkbox" class="checkbox" v-model="selectedMapes" :value="folder" />
+                                    {{ folder }}
+                                </label>
                             </div>
+                        </div>
 
-                            <!-- Mape -->
-                            <p><strong>Mape:</strong> {{ book.folder }}</p>
+                        <!-- Jauna mape -->
+                        <div class="new-folder">
+                            <input type="text" v-model="newMape" placeholder="Jauna mape..." />
+                            <button @click="addMape" class="create-btn">Pievienot</button>
+                        </div>
+                    </div>
+
+                    <!-- Žanri -->
+                    <div class="sort-section">
+                        <h3 @click="showMoreGenres = !showMoreGenres" class="toggle-header">
+                            Žanrs <span>{{ showMoreGenres ? '▲' : '▼' }}</span>
+                        </h3>
+                        <div v-for="(genre, index) in visibleGenres" :key="index" class="list__item">
+                            <label class="label--checkbox">
+                                <input type="checkbox" class="checkbox" v-model="selectedGenres" :value="genre" />
+                                {{ genre }}
+                            </label>
+                        </div>
+                        <div v-if="showMoreGenres">
+                            <div v-for="(genre, index) in hiddenGenres" :key="'hidden-' + index" class="list__item">
+                                <label class="label--checkbox">
+                                    <input type="checkbox" class="checkbox" v-model="selectedGenres" :value="genre" />
+                                    {{ genre }}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Main Content Area -->
+                <div class="main-content">
+                    <h1>Visas grāmatas</h1>
+                    <p><strong>Atlasītās mapes:</strong> {{ selectedMapes.join(', ') || 'Nav atlasītas' }}</p>
+                    <p><strong>Atlasītie žanri:</strong> {{ selectedGenres.join(', ') || 'Nav atlasīti' }}</p>
+
+                    <div class="book-list">
+                        <div v-for="(book, index) in filteredBooks" :key="index" class="book-card">
+                            <div class="book-info">
+                                <img :src="book.cover" alt="Book Cover" class="book-cover" />
+                                <div class="book-text">
+                                    <h3>{{ book.title }}</h3>
+                                    <p><strong>Autors:</strong> {{ book.author }}</p>
+                                    <div class="rating">
+                                        <span v-for="star in 5" :key="star" @click="rateBook(index, star)">
+                                            {{ star <= book.rating ? '⭐' : '☆' }}
+                                        </span>
+                                    </div>
+                                    <p><strong>Mape:</strong> {{ book.folder }}</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <div v-else class="text-center mt-20">
+            <h1 class="text-3xl font-bold">Jūs neesat autorizējies!</h1>
+            <p class="mt-4">
+                Lūdzu <a href="/login" class="text-blue-500 underline">ienāc sistēmā</a>, lai piekļūtu šai sadaļai.
+            </p>
+        </div>
+        <Footer />
     </div>
-    <Footer />
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from "vue";
+import { router } from '@inertiajs/vue3';
 import Navbar from "@/Components/navbar.vue";
 import Footer from "@/Components/footer.vue";
+
+const logout = () => {
+    router.post('/logout');
+};
 
 // Mapes un žanri
 const mapes = ref(["Darbs", "Personīgais", "Ceļojumi", "Projekti", "Mācības", "Cits"]);

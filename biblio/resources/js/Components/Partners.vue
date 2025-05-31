@@ -37,25 +37,25 @@ export default {
             partners: [
                 {
                     name: "Latvian Book Club",
-                    logo: "/img/partner1.png",
+                    logo: "/images/partner1.png",
                     description: "A community of passionate readers and authors.",
                     link: "https://example.com/latvian-book-club"
                 },
                 {
                     name: "ReadMore Publishing",
-                    logo: "/img/partner2.png",
+                    logo: "/images/partner2.png",
                     description: "Helping authors publish and share their stories.",
                     link: "https://example.com/readmore"
                 },
                 {
                     name: "Paper & Ink",
-                    logo: "/img/partner3.png",
+                    logo: "/imgages/partner3.png",
                     description: "Premium stationery and bookbinding.",
                     link: "https://example.com/paper-ink"
                 },
                 {
                     name: "eBookify",
-                    logo: "/img/partner4.png",
+                    logo: "/imgages/partner4.png",
                     description: "Convert and read books digitally, anywhere.",
                     link: "https://example.com/ebookify"
                 },
