@@ -16,4 +16,13 @@ class Book extends Model
         'image',
         'published_year',
     ];
+
+    public function genres()
+    {
+        return $this->belongsToMany(Genre::class);
+    }
+
+
+
 }
+

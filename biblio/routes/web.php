@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\RatingController;
+use App\Models\Genre;
+
 
 Route::post('/logout', function () {
     Auth::logout();
@@ -38,3 +40,5 @@ Route::post('/books/{book}/ratings', [RatingController::class, 'store']);
 
 // Laravel Breeze / Jetstream autentifikācija
 require __DIR__.'/auth.php';
+
+Route::get('/api/genres', fn() => Genre::all());

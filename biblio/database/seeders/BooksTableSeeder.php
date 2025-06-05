@@ -4,6 +4,9 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use App\Models\Book;
+use App\Models\Genre;
+
 
 class BooksTableSeeder extends Seeder
 {
@@ -324,5 +327,15 @@ class BooksTableSeeder extends Seeder
         ];
 
         DB::table('books')->insert($books);
+
+        $allBooks = Book::all();
+        $allGenres = Genre::all();
+
+        foreach ($allBooks as $book) {
+            $book->genres()->attach(
+                $allGenres->random(2)->pluck('id')->toArray()
+            );
+        }
+
     }
 }

@@ -11,6 +11,16 @@
                 >
                 <h2 class="text-lg font-semibold">{{ book.title }}</h2>
                 <p class="text-gray-600 text-sm">by {{ book.author }}</p>
+                <!-- Žanri -->
+                <div v-if="book.genres && book.genres.length" class="mt-2">
+                  <span
+                      v-for="genre in book.genres"
+                      :key="genre.id"
+                      class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full mr-1 mb-1"
+                  >
+                    {{ genre.name }}
+                  </span>
+                </div>
                 <p class="text-sm mt-2 text-gray-700">{{ book.description }}</p>
 
                 <button

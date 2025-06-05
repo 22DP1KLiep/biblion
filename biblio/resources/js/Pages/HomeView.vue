@@ -19,6 +19,7 @@
             <div class="intro-text">
                 "Lasīt grāmatas ir kā ceļot laikā un telpā – un šeit Tu vari atrast savu nākamo galamērķi!"
             </div>
+
             <Partners />
             <showBook />
         </main>
@@ -44,24 +45,14 @@ export default {
     },
     data() {
         return {
+
             currentSlide: 0,
             slides: [
                 { src: "/img/hand-drawn-book-club-facebook-cover-b.png" },
                 { src: "/img/hand-drawn-book-club-twitch-banner-template.png"},
                 { src: "/img/1.jpg"},
             ],
-            books: [
-                { title: "TOP 1", image: "/img/1984_george_orwell.jpg", description: "\"1984\" – George Orwell" },
-                { title: "TOP 2", image: "/img/ToKillAMockingbird_HarperLee.jpg", description: "\"To Kill a Mockingbird\" – Harper Lee" },
-                { title: "TOP 3", image: "/img/TheGreatGatsby_FScottFitzgerald.jpg", description: "\"The Great Gatsby\" – F. Scott Fitzgerald" },
-                { title: "TOP 4", image: "/img/PrideAndPrejustice_JaneAustin.jpg", description: "\"Pride and Prejudice\" – Jane Austen" },
-                { title: "TOP 5", image: "/img/MobyDick_HermanMelville.jpg", description: "\"Moby-Dick\" – Herman Melville" },
-                { title: "TOP 6", image: "/img/100YearsOfSolitude_GGMarquez.jpg", description: "\"One Hundred Years of Solitude\" – Gabriel García Márquez" },
-                { title: "TOP 7", image: "/img/WarAndPeace_LTolstoy.jpg", description: "\"War and Peace\" – Leo Tolstoy" },
-                { title: "TOP 8", image: "/img/TheCatherInTheRye_JDSalinger.jpg", description: "\"The Catcher in the Rye\" – J.D. Salinger" },
-                { title: "TOP 9", image: "/img/LordOfTheRings_JRRTolken.jpg", description: "\"The Lord of the Rings\" – J.R.R. Tolkien" },
-                { title: "TOP 10", image: "/img/BrothersKaramazov_FDostoevsky.jpg", description: "\"The Brothers Karamazov\" – Fyodor Dostoevsky" }
-            ]
+            books: []
         };
     },
     methods: {
@@ -70,10 +61,19 @@ export default {
         }
     },
     mounted() {
+        axios.get('/books') // vai /get/all/books ja vēlies visas
+            .then(response => {
+                this.books = response.data;
+            })
+            .catch(error => {
+                console.error("Kļūda ielādējot grāmatas:", error);
+            });
+
         setInterval(() => {
             this.changeSlide(1);
         }, 3000);
     }
+
 };
 </script>
 

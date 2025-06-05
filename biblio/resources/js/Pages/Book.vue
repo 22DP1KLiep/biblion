@@ -9,9 +9,28 @@
             <div class="w-2/3 flex flex-col">
                 <h1 class="text-3xl font-bold mb-2">{{ book.title }}</h1>
                 <p class="text-xl text-gray-700 mb-4">by {{ book.author }}</p>
+                <!-- Žanri -->
+                <div v-if="book.genres && book.genres.length" class="mt-2">
+                  <span
+                      v-for="genre in book.genres"
+                      :key="genre.id"
+                      class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full mr-1 mb-1"
+                  >
+                    {{ genre.name }}
+                  </span>
+                </div>
                 <p class="text-gray-600 mb-4">{{ book.description }}</p>
 
                 <div v-if="$page.props.auth.user">
+                    <!-- Save book button -->
+                    <div v-if="$page.props.auth.user" class="mt-4">
+                        <button
+                            @click="saveBook"
+                            class="bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600"
+                        >
+                            {{ isSaved ? '✔️ Saglabāta' : '💾 Saglabāt grāmatu' }}
+                        </button>
+                    </div>
                     <!-- Rating input -->
                     <div class="star-rating">
                         <input type="radio" id="star5" name="rating" value="5" v-model="rating"><label for="star5">★</label>

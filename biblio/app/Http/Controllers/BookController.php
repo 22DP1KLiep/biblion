@@ -3,61 +3,53 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Feedback;
 use App\Models\Book;
-
 
 class BookController extends Controller
 {
     /**
-     * Get all books.
+     * Rāda 10 grāmatas ar žanriem (homepage, utt.)
      */
     public function index()
     {
-        $books = Book::limit(10)->get();
+        $books = Book::with('genres')->limit(10)->get();
+        return response()->json($books);
+    }
+
+    /**
+     * Rāda visas grāmatas ar žanriem
+     */
+    public function get_all(Request $request)
+    {
+        $sortField = $request->query('sort', 'title');
+        $direction = $request->query('direction', 'asc');
+        $genreIds = $request->query('genres', []); // <-- no vaicājuma
+
+        $allowedFields = ['title', 'author', 'published_year'];
+        if (!in_array($sortField, $allowedFields)) {
+            $sortField = 'title';
+        }
+
+        $books = Book::with('genres')
+            ->when(!empty($genreIds), function ($query) use ($genreIds) {
+                $query->whereHas('genres', function ($q) use ($genreIds) {
+                    $q->whereIn('genres.id', $genreIds);
+                }); // <-- NO count() here – tas tagad ir OR
+            })
+            ->orderBy($sortField, $direction)
+            ->get();
+
 
         return response()->json($books);
     }
 
-    public function get_all()
-    {
-        return response()->json(Book::all());
-    }
 
-
+    /**
+     * Parāda vienu grāmatu ar žanriem
+     */
     public function show($id)
     {
-        $book = Book::findOrFail($id);
+        $book = Book::with('genres')->findOrFail($id);
         return response()->json($book);
-    }
-
-
-}
-
-class FeedbackController extends Controller
-{
-    public function index($bookId)
-    {
-        $feedback = Feedback::where('book_id', $bookId)
-            ->orderByDesc('created_at')
-            ->get(['comment', 'rating']);
-
-        return response()->json($feedback);
-    }
-
-    public function store(Request $request, $bookId)
-    {
-        $request->validate([
-            'comment' => 'required|string|max:1000',
-            'rating' => 'required|integer|min:1|max:5',
-        ]);
-
-        $feedback = Feedback::create([
-            'book_id' => $bookId,
-            'comment' => $request->input('comment'),
-            'rating' => $request->input('rating'),
-        ]);
-
-        return response()->json(['message' => 'Feedback submitted!'], 201);
     }
 }
