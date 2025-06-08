@@ -24,5 +24,9 @@ class DatabaseSeeder extends Seeder
             GenreSeeder::class,
             BooksTableSeeder::class,
         ]);
+
+        $this->call(FolderSeeder::class);
+
+
     }
 }

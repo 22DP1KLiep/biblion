@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Rating;
+use App\Models\Book;
 use Illuminate\Http\Request;
 
 class RatingController extends Controller
@@ -23,5 +24,16 @@ class RatingController extends Controller
             ['rating' => $request->rating]
         );
     }
-}
 
+    public function show(Book $book)
+    {
+        $rating = Rating::where('book_id', $book->id)
+            ->where('user_id', auth()->id())
+            ->first();
+
+        return response()->json([
+            'rating' => $rating ? $rating->rating : null
+        ]);
+    }
+
+}

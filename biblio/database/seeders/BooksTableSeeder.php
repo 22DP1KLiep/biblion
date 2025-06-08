@@ -3,339 +3,231 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use App\Models\Book;
 use App\Models\Genre;
-
+use Illuminate\Support\Facades\DB;
 
 class BooksTableSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+
+        DB::table('book_genre')->truncate();
+        DB::table('books')->truncate();
+
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         $books = [
             [
-                'title' => '1984',
-                'author' => 'George Orwell',
-                'description' => 'Distopiska stāsts par totalitārismu un vajāšanu.',
-                'image' => null,
-                'published_year' => 1949,
+                'title' => 'Harijs Poters un Filozofu akmens',
+                'author' => 'Dž. K. Roulinga',
+                'description' => 'Pirmā grāmata par burvju skolu Cūkkārpu.',
+                'image' => 'img/harijspotersunfilozofuakmens_978-9934-0-8149-1_1.jpg',
+                'published_year' => 1997,
+                'genres' => ['Fantāzija', 'Piedzīvojumi', 'Jauniešu literatūra']
             ],
             [
-                'title' => 'Nokautēt medību putnu',
-                'author' => 'Harper Lee',
-                'description' => 'Romāns par rasu nevienlīdzību ASV dienvidos.',
-                'image' => null,
-                'published_year' => 1960,
+                'title' => 'Dzīvnieku ferma',
+                'author' => 'Džordžs Orvels',
+                'description' => 'Allegorisks stāsts par varu un sabiedrību.',
+                'image' => 'img/dzivnieku_ferma.jpg',
+                'published_year' => 1945,
+                'genres' => ['Distopija', 'Klasika', 'Filozofija']
             ],
             [
-                'title' => 'Lielais Gatsbijs',
-                'author' => 'F. Scott Fitzgerald',
-                'description' => 'Kritika par Amerikāņu sapni 1920. gados.',
-                'image' => null,
-                'published_year' => 1925,
+                'title' => 'Mazais princis',
+                'author' => 'Antuāns de Sent-Ekziperī',
+                'description' => 'Poētisks stāsts par draudzību, dzīvi un mīlestību.',
+                'image' => 'img/mazais_princis.jpg',
+                'published_year' => 1943,
+                'genres' => ['Bērnu literatūra', 'Filozofija', 'Fantāzija']
             ],
             [
-                'title' => 'Leptība un aizspriedumi',
-                'author' => 'Jane Austen',
-                'description' => 'Klasisks romāns par mīlestību un sociālo stāvokli.',
-                'image' => null,
-                'published_year' => 1813,
+                'title' => 'Alķīmiķis',
+                'author' => 'Paulu Koelju',
+                'description' => 'Garīgs ceļojums par sapņu piepildīšanu.',
+                'image' => 'img/alkimikis.jpg',
+                'published_year' => 1988,
+                'genres' => ['Filozofija', 'Psiholoģisks romāns']
             ],
             [
-                'title' => 'Moby-Dick',
-                'author' => 'Herman Melville',
-                'description' => 'Stāsts par kapteini Ahaba mānīgo vajāšanu pēc milzīgā vaļa.',
-                'image' => null,
-                'published_year' => 1851,
+                'title' => 'Puika svītrainajā pidžamā',
+                'author' => 'Džons Boins',
+                'description' => 'Draudzība starp diviem zēniem holokausta laikā.',
+                'image' => 'img/puisen_svitraina_pidzamma.jpg',
+                'published_year' => 2006,
+                'genres' => ['Vēsturiskais romāns', 'Dramatisks romāns']
             ],
             [
-                'title' => 'Simts gadu vientulība',
-                'author' => 'Gabriel García Márquez',
-                'description' => 'Maģiskā reālisma romāns par Buendīju ģimenes uzplaukumu un sabrukumu.',
-                'image' => null,
-                'published_year' => 1967,
+                'title' => 'Noslēpumu sala',
+                'author' => 'Žils Verns',
+                'description' => 'Piedzīvojumu romāns par izdzīvošanu salā.',
+                'image' => 'img/noslepumu_sala.jpg',
+                'published_year' => 1874,
+                'genres' => ['Piedzīvojumi', 'Klasika']
             ],
             [
-                'title' => 'Karš un miers',
-                'author' => 'Leo Tolstoy',
-                'description' => 'Episks romāns par Krievijas sabiedrību Napoleona laikmetā.',
-                'image' => null,
-                'published_year' => 1869,
+                'title' => 'Mātes piens',
+                'author' => 'Nora Ikstena',
+                'description' => 'Stāsts par sievietes dzīvi padomju laikā.',
+                'image' => 'img/mates_piens.jpg',
+                'published_year' => 2015,
+                'genres' => ['Psiholoģisks romāns', 'Dramatisks romāns']
             ],
             [
-                'title' => 'Rudzu sargi',
-                'author' => 'J.D. Salinger',
-                'description' => 'Stāsts par pusaudžu vientulību un nemieriem.',
-                'image' => null,
-                'published_year' => 1951,
+                'title' => 'Mazās sievietes',
+                'author' => 'Lūiza Meja Alokta',
+                'description' => 'Māsas pieaug kara laika Amerikā.',
+                'image' => 'img/lasitprieks-mazas-sievietes-m-v.webp',
+                'published_year' => 1868,
+                'genres' => ['Klasika', 'Romantika']
             ],
             [
-                'title' => 'Gredzenu pavēlnieks',
-                'author' => 'J.R.R. Tolkien',
-                'description' => 'Fantāzijas epopēja par cīņu starp labo un ļauno.',
-                'image' => null,
-                'published_year' => 1954,
+                'title' => 'Velniņi',
+                'author' => 'Rūdolfs Blaumanis',
+                'description' => 'Interesants pastāsts par divu velnēnu gaitām virszemē.',
+                'image' => 'img/velnini.jpg',
+                'published_year' => 1901,
+                'genres' => ['Bērnu literatūra', 'Piedzīvojumi']
             ],
             [
-                'title' => 'Brāļi Karamazovi',
-                'author' => 'Fyodor Dostoevsky',
-                'description' => 'Filozofisks romāns par ticību, šaubām un brīvo gribu.',
-                'image' => null,
-                'published_year' => 1880,
-            ],
-            [
-                'title' => 'Doktors Živago',
-                'author' => 'Boris Pasternak',
-                'description' => 'Romāns par mīlestību un revolūciju Krievijā.',
-                'image' => null,
-                'published_year' => 1957,
-            ],
-            [
-                'title' => 'Anna Karenina',
-                'author' => 'Leo Tolstoy',
-                'description' => 'Romāns par mīlestību, greizsirdību un sabiedrības normas.',
-                'image' => null,
-                'published_year' => 1877,
-            ],
-            [
-                'title' => 'Lolita',
-                'author' => 'Vladimir Nabokov',
-                'description' => 'Romāns par aizliegtu mīlestību un morāles robežām.',
-                'image' => null,
-                'published_year' => 1955,
-            ],
-            [
-                'title' => 'Ulysses',
-                'author' => 'James Joyce',
-                'description' => 'Modernistisks romāns par vienas dienas notikumiem Dublinasā.',
-                'image' => null,
-                'published_year' => 1922,
-            ],
-            [
-                'title' => 'Kāds pārlaidās pār dzeguzes ligzdu',
-                'author' => 'Ken Kesey',
-                'description' => 'Romāns par psihiatrisko slimnīcu un sabiedrības normas.',
-                'image' => null,
-                'published_year' => 1962,
-            ],
-            [
-                'title' => 'Fahrenheit 451',
-                'author' => 'Ray Bradbury',
-                'description' => 'Distopiska stāsts par grāmatu aizliegšanu un cenzūru.',
-                'image' => null,
-                'published_year' => 1953,
-            ],
-            [
-                'title' => 'Dzīve un liktenis',
-                'author' => 'Vasilijs Grossmans',
-                'description' => 'Romāns par Staļingrada kauju un cilvēka dzīvi totalitārā režīmā.',
-                'image' => null,
-                'published_year' => 1959,
-            ],
-            [
-                'title' => 'Zilā putna meklējumos',
-                'author' => 'Maurice Maeterlinck',
-                'description' => 'Allegorisks stāsts par laimes meklējumiem.',
-                'image' => null,
-                'published_year' => 1908,
-            ],
-            [
-                'title' => 'Dāma ar sunīti',
-                'author' => 'Anton Čehovs',
-                'description' => 'Stāsts par aizliegtu mīlestību un morāles dilemmām.',
-                'image' => null,
-                'published_year' => 1899,
-            ],
-            [
-                'title' => 'Kāds skrēja pāri dzeguzes ligzdu',
-                'author' => 'Ken Kesey',
-                'description' => 'Romāns par psihiatrisko slimnīcu un sabiedrības normas.',
-                'image' => null,
-                'published_year' => 1962,
-            ],
-            [
-                'title' => 'Svešais',
-                'author' => 'Alberts Kamī',
-                'description' => 'Eksistenciāls romāns par dzīves absurdu un bezjēdzību.',
-                'image' => null,
-                'published_year' => 1942,
-            ],
-            [
-                'title' => 'Mīlestība Kolkasā laikā',
-                'author' => 'Gabriel García Márquez',
-                'description' => 'Romāns par mīlestību un likteni Kolkasā.',
-                'image' => null,
-                'published_year' => 1985,
-            ],
-            [
-                'title' => 'Zvejnieka bērni',
-                'author' => 'Lūcija Berķe',
-                'description' => 'Stāsts par zvejnieku ģimeni un viņu dzīvi pie jūras.',
-                'image' => null,
-                'published_year' => 1972,
-            ],
-            [
-                'title' => 'Mēness un ugunskurs',
+                'title' => 'Baltā grāmata',
                 'author' => 'Jānis Jaunsudrabiņš',
-                'description' => 'Romāns par lauku dzīvi un cilvēku attiecībām.',
-                'image' => null,
-                'published_year' => 1921,
+                'description' => 'Bērnības atmiņas un lauku dzīves apraksti.',
+                'image' => 'img/balta_gramata.jpg',
+                'published_year' => 1914,
+                'genres' => ['Bērnu literatūra', 'Klasika']
             ],
             [
-                'title' => 'Pēdējā vasara',
-                'author' => 'Inese Zandere',
-                'description' => 'Stāsts par mīlestību un zaudējumiem.',
-                'image' => null,
+                'title' => 'Harijs Poters un Noslēpumu kambaris',
+                'author' => 'Dž. K. Roulinga',
+                'description' => 'Harijs atgriežas Cūkkārpā, lai atklātu skolas noslēpumus.',
+                'image' => 'img/noslepumu_kambaris.jpg',
+                'published_year' => 1998,
+                'genres' => ['Fantāzija', 'Piedzīvojumi', 'Jauniešu literatūra']
+            ],
+            [
+                'title' => 'Harijs Poters un Azkabanas gūsteknis',
+                'author' => 'Dž. K. Roulinga',
+                'description' => 'Harijs uzzina par Siriju Bleku un viņa pagātni.',
+                'image' => 'img/azkabanas_gusteknis.jpg',
+                'published_year' => 1999,
+                'genres' => ['Fantāzija', 'Piedzīvojumi', 'Jauniešu literatūra']
+            ],
+            [
+                'title' => 'Harijs Poters un Uguns biķeris',
+                'author' => 'Dž. K. Roulinga',
+                'description' => 'Harijs piedalās Trim burvju sacensībās.',
+                'image' => 'img/uguns_bikeris.jpg',
+                'published_year' => 2000,
+                'genres' => ['Fantāzija', 'Piedzīvojumi', 'Jauniešu literatūra']
+            ],
+            [
+                'title' => 'Harijs Poters un Fēniksa ordenis',
+                'author' => 'Dž. K. Roulinga',
+                'description' => 'Harijs saskaras ar Voldemorta atgriešanos un izveido slepenu grupu.',
+                'image' => 'img/feniksa_ordenis.jpg',
+                'published_year' => 2003,
+                'genres' => ['Fantāzija', 'Piedzīvojumi', 'Jauniešu literatūra']
+            ],
+            [
+                'title' => 'Harijs Poters un Jauktasiņu princis',
+                'author' => 'Dž. K. Roulinga',
+                'description' => 'Harijs uzzina par Voldemorta pagātni un dvēseles noslēpumiem.',
+                'image' => 'img/jauktasinu_princis.jpg',
                 'published_year' => 2005,
+                'genres' => ['Fantāzija', 'Piedzīvojumi', 'Jauniešu literatūra']
             ],
             [
-                'title' => 'Ziemassvētku stāsti',
-                'author' => 'Rainis',
-                'description' => 'Stāstu krājums par ziemassvētkiem un to nozīmi.',
-                'image' => null,
-                'published_year' => 1925,
+                'title' => 'Harijs Poters un Nāves dāvesti',
+                'author' => 'Dž. K. Roulinga',
+                'description' => 'Noslēdzošā cīņa starp labo un ļauno.',
+                'image' => 'img/naves_davesti.webp',
+                'published_year' => 2007,
+                'genres' => ['Fantāzija', 'Piedzīvojumi', 'Jauniešu literatūra']
             ],
             [
-                'title' => 'Spoki',
-                'author' => 'Rūdolfs Blaumanis',
-                'description' => 'Stāsts par spokiem un cilvēku bailēm.',
-                'image' => null,
-                'published_year' => 1902,
+                'title' => 'Bada spēles',
+                'author' => 'Sūzena Kolinsa',
+                'description' => 'Katnisa Everdīna piedalās nāvējošās sacensībās.',
+                'image' => 'img/bada_speles.jpg',
+                'published_year' => 2008,
+                'genres' => ['Distopija', 'Jauniešu literatūra', 'Trilleris']
             ],
             [
-                'title' => 'Dzīvības koks',
-                'author' => 'Anna Sakse',
-                'description' => 'Romāns par dzīvi un nāvi, mīlestību un naidu.',
-                'image' => null,
-                'published_year' => 1934,
+                'title' => 'Spēle ar uguni',
+                'author' => 'Sūzena Kolinsa',
+                'description' => 'Katnisa tiek ierauta dumpja simbolikā.',
+                'image' => 'img/spele_ar_uguni.jpg',
+                'published_year' => 2009,
+                'genres' => ['Distopija', 'Jauniešu literatūra', 'Trilleris']
             ],
             [
-                'title' => 'Māja pie ezera',
-                'author' => 'Jānis Ezeriņš',
-                'description' => 'Stāsts par māju pie ezera un tās iemītniekiem.',
-                'image' => null,
-                'published_year' => 1938,
+                'title' => 'Zobgaļsīlis',
+                'author' => 'Sūzena Kolinsa',
+                'description' => 'Revolūcijas kulminācija pret Kapitoliju.',
+                'image' => 'img/zobgalsilis.jpg',
+                'published_year' => 2010,
+                'genres' => ['Distopija', 'Jauniešu literatūra', 'Trilleris']
             ],
             [
-                'title' => 'Vēja zīmes',
-                'author' => 'Vizma Belševica',
-                'description' => 'Dzejoļu krājums par dzīvi un dabu.',
-                'image' => null,
-                'published_year' => 1965,
+                'title' => 'Pieci pirksti',
+                'author' => 'Māra Zālīte',
+                'description' => 'Romāns par padomju Latvijas bērnību.',
+                'image' => 'img/pieci_pirksti.webp',
+                'published_year' => 2014,
+                'genres' => ['Vēsturiskais romāns', 'Psiholoģisks romāns']
             ],
             [
-                'title' => 'Mākslinieka dzīve',
-                'author' => 'Jānis Akuraters',
-                'description' => 'Romāns par mākslinieka dzīvi un viņa cīņu ar sevi.',
-                'image' => null,
-                'published_year' => 1920,
+                'title' => 'Svina garša',
+                'author' => 'Māris Bērziņš',
+                'description' => 'Romāns par dzīvi padomju okupācijas laikā.',
+                'image' => 'img/svina_garsa.webp',
+                'published_year' => 2015,
+                'genres' => ['Dramatisks romāns', 'Vēsturiskais romāns']
             ],
             [
-                'title' => 'Pieci stāsti par mīlestību',
-                'author' => 'Zigmunds Skujiņš',
-                'description' => 'Stāstu krājums par mīlestību un tās dažādajām formām.',
-                'image' => null,
-                'published_year' => 1998,
+                'title' => 'Stikli',
+                'author' => 'Inga Gaile',
+                'description' => 'Psiholoģisks romāns par ģimenes attiecībām un vēsturi.',
+                'image' => 'img/stikli.webp',
+                'published_year' => 2013,
+                'genres' => ['Psiholoģisks romāns', 'Dramatisks romāns']
             ],
             [
-                'title' => 'Rīgas stāsti',
-                'author' => 'Andrejs Upīts',
-                'description' => 'Stāstu krājums par Rīgu un tās iedzīvotājiem.',
-                'image' => null,
-                'published_year' => 1940,
+                'title' => 'Sarkanie bērni',
+                'author' => 'Inga Žolude',
+                'description' => 'Filigrāni veidots stāsts par sievietes iekšējo pasauli.',
+                'image' => 'img/sarkanie_berni.jpg',
+                'published_year' => 2010,
+                'genres' => ['Psiholoģisks romāns']
             ],
             [
-                'title' => 'Baltā grāmata',
-                'author' => 'Jānis Jaunsudrabiņš',
-                'description' => 'Romāns par dzīvi un nāvi, mīlestību un naidu.',
-                'image' => null,
-                'published_year' => 1921,
-            ],
-            [
-                'title' => 'Mīlestība un tumsa',
-                'author' => 'Jānis Rainis',
-                'description' => 'Dzejoļu krājums par mīlestību un tumsu.',
-                'image' => null,
-                'published_year' => 1905,
-            ],
-            [
-                'title' => 'Pēdējā vēstule',
-                'author' => 'Anna Brigadere',
-                'description' => 'Stāsts par pēdējo vēstuli un tās nozīmi.',
-                'image' => null,
-                'published_year' => 1920,
-            ],
-            [
-                'title' => 'Ziemas stāsti',
-                'author' => 'Rūdolfs Blaumanis',
-                'description' => 'Stāstu krājums par ziemu un tās burvību.',
-                'image' => null,
-                'published_year' => 1905,
-            ],
-            [
-                'title' => 'Mīlestība un naids',
-                'author' => 'Jānis Akuraters',
-                'description' => 'Romāns par mīlestību un naidu, dzīvi un nāvi.',
-                'image' => null,
-                'published_year' => 1920,
-            ],
-            [
-                'title' => 'Pieci stāsti par dzīvi',
-                'author' => 'Zigmunds Skujiņš',
-                'description' => 'Stāstu krājums par dzīvi un tās dažādajām formām.',
-                'image' => null,
-                'published_year' => 1998,
-            ],
-            [
-                'title' => 'Rīgas stāsti',
-                'author' => 'Andrejs Upīts',
-                'description' => 'Stāstu krājums par Rīgu un tās iedzīvotājiem.',
-                'image' => null,
-                'published_year' => 1940,
-            ],
-            [
-                'title' => 'Baltā grāmata',
-                'author' => 'Jānis Jaunsudrabiņš',
-                'description' => 'Romāns par dzīvi un nāvi, mīlestību un naidu.',
-                'image' => null,
-                'published_year' => 1921,
-            ],
-            [
-                'title' => 'Mīlestība un tumsa',
-                'author' => 'Jānis Rainis',
-                'description' => 'Dzejoļu krājums par mīlestību un tumsu.',
-                'image' => null,
-                'published_year' => 1905,
-            ],
-            [
-                'title' => 'Pēdējā vēstule',
-                'author' => 'Anna Brigadere',
-                'description' => 'Stāsts par pēdējo vēstuli un tās nozīmi.',
-                'image' => null,
-                'published_year' => 1920,
-            ],
-            [
-                'title' => 'Ziemas stāsti',
-                'author' => 'Rūdolfs Blaumanis',
-                'description' => 'Stāstu krājums par ziemu un tās burvību.',
-                'image' => null,
-                'published_year' => 1905,
-            ],
+                'title' => 'Virsnieku sievas',
+                'author' => 'Andra Manfelde',
+                'description' => 'Romāns par sieviešu likteņiem padomju armijas ēnā.',
+                'image' => 'img/virsnieka sieva.jpg',
+                'published_year' => 2012,
+                'genres' => ['Dramatisks romāns', 'Vēsturiskais romāns']
+            ]
         ];
 
-        DB::table('books')->insert($books);
 
-        $allBooks = Book::all();
-        $allGenres = Genre::all();
-
-        foreach ($allBooks as $book) {
-            $book->genres()->attach(
-                $allGenres->random(2)->pluck('id')->toArray()
+        foreach ($books as $bookData) {
+            // Atjaunina vai izveido grāmatu pēc title
+            $book = Book::updateOrCreate(
+                ['title' => $bookData['title']],
+                [
+                    'author' => $bookData['author'],
+                    'description' => $bookData['description'],
+                    'image' => $bookData['image'],
+                    'published_year' => $bookData['published_year'],
+                ]
             );
-        }
 
+            // Atrod žanru ID un sinhronizē ar šo grāmatu
+            $genreIds = Genre::whereIn('name', $bookData['genres'])->pluck('id')->toArray();
+            $book->genres()->sync($genreIds);
+        }
     }
 }

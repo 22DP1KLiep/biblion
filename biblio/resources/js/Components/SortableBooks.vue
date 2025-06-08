@@ -1,6 +1,5 @@
 <template>
     <div class="flex flex-col md:flex-row relative min-h-screen">
-
         <!-- Mobile toggle button -->
         <button
             class="md:hidden bg-blue-500 text-white px-4 py-2 m-4 rounded w-fit"
@@ -9,52 +8,41 @@
             ☰ Filtri
         </button>
 
-        <!-- Sidebar (desktop & mobile) -->
+        <!-- Sidebar -->
         <transition name="slide">
             <aside
                 v-show="sidebarOpen"
-                class="fixed md:relative z-40 md:z-0 top-0 left-0 w-64 bg-gray-100 p-4 h-full md:min-h-screen overflow-y-auto shadow-lg md:shadow-none"
+                class="fixed md:sticky top-0 left-0 z-40 md:z-10 w-64 bg-gray-100 p-4 h-screen overflow-y-auto shadow-lg md:shadow-md rounded-r-xl"
             >
-                <!-- Mobile close button -->
+                <!-- Close button -->
                 <div class="flex justify-between items-center mb-4 md:hidden">
                     <h2 class="text-lg font-bold">Filtri</h2>
                     <button @click="sidebarOpen = false" class="text-xl font-bold">&times;</button>
                 </div>
 
-                <!-- Žanru filtrs -->
-                <!-- Sidebar žanru daļā (replace esošo žanru sadaļu ar šo) -->
-                <div class="mb-4">
-                    <button
-                        class="flex items-center justify-between w-full text-left font-bold text-lg mb-2"
-                        @click="genresOpen = !genresOpen"
-                    >
-                        Žanri
-                        <span class="text-sm">
-            <span v-if="genresOpen">▲</span>
-            <span v-else>▼</span>
-        </span>
-                    </button>
-
-                    <transition name="fade">
-                        <div v-show="genresOpen" class="space-y-2 pl-2">
-                            <label
-                                v-for="genre in genres"
-                                :key="genre.id"
-                                class="flex items-center gap-2 text-sm"
-                            >
-                                <input
-                                    type="checkbox"
-                                    :value="genre.id"
-                                    v-model="selectedGenres"
-                                    @change="fetchBooks"
-                                >
-                                {{ genre.name }}
-                            </label>
-                        </div>
-                    </transition>
+                <!-- Žanru filtrs stilīgā čipu dizainā -->
+                <div class="mb-6">
+                    <h2 class="text-md font-semibold mb-2 text-gray-700">Žanri</h2>
+                    <div class="flex flex-wrap gap-2">
+                        <button
+                            v-for="genre in genres"
+                            :key="genre.id"
+                            @click="toggleGenre(genre.id)"
+                            :class="[
+        'px-4 py-2 rounded-full text-sm font-medium border transition',
+        selectedGenres.includes(genre.id)
+          ? 'bg-blue-100 text-blue-600 border-blue-500'
+          : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100'
+      ]"
+                        >
+                            {{ genre.name }}
+                        </button>
+                    </div>
                 </div>
 
-                <!-- Kārtošana -->
+
+
+                <!-- Sorting -->
                 <div class="mt-6">
                     <h3 class="text-md font-semibold mb-2">Kārtot pēc:</h3>
                     <select v-model="sortBy" @change="fetchBooks" class="w-full border rounded px-2 py-1 mb-2">
@@ -71,7 +59,7 @@
             </aside>
         </transition>
 
-        <!-- Overlay when sidebar is open (only on mobile) -->
+        <!-- Overlay (mobile) -->
         <div
             v-show="sidebarOpen"
             class="fixed inset-0 bg-black bg-opacity-40 z-30 md:hidden"
@@ -79,39 +67,50 @@
         ></div>
 
         <!-- Main content -->
-        <main class="flex-1 p-6">
-            <h1 class="text-2xl font-bold mb-6 text-center">Grāmatu saraksts</h1>
+        <main class="flex-1 p-4">
+<!--            <h1 class="text-2xl font-bold mb-6 text-center">Grāmatu saraksts</h1>-->
 
-            <div v-if="books.length" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                <div v-for="book in books" :key="book.id" class="p-4 bg-white rounded-lg shadow-lg">
-                    <img
-                        :src="book.image"
-                        :alt="book.title"
-                        class="w-full h-48 object-cover rounded-md mb-4"
-                    >
-                    <h2 class="text-lg font-semibold">{{ book.title }}</h2>
-                    <p class="text-gray-600 text-sm">by {{ book.author }}</p>
-                    <div v-if="book.genres && book.genres.length" class="mt-2">
-                        <span
-                            v-for="genre in book.genres"
-                            :key="genre.id"
-                            class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full mr-1 mb-1"
-                        >
-                            {{ genre.name }}
-                        </span>
+            <div v-if="searchQuery" class="mb-4 text-center">
+                <p class="text-gray-600">Meklēšanas rezultāti: <strong>{{ searchQuery }}</strong></p>
+            </div>
+
+            <div v-if="books.length" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div
+                    v-for="book in books"
+                    :key="book.id"
+                    @click="inspectBook(book.id)"
+                class="relative w-full max-w-[390px] rounded-lg overflow-hidden shadow-lg cursor-pointer transition transform hover:scale-105 hover:shadow-2xl mx-auto"
+                >
+
+                <!-- Book cover -->
+                    <img :src="book.image" :alt="book.title" class="w-full h-[460px] object-cover" />
+
+                    <!-- Gradient text overlay -->
+                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent text-white px-6 py-6 pointer-events-none">
+                        <h3 class="text-xl font-bold leading-snug mb-1" style="text-shadow: 2px 2px 6px rgba(0,0,0,0.85);">
+                            {{ book.title }}
+                        </h3>
+                        <p class="text-sm text-gray-300 italic mb-1" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.85);">
+                            by {{ book.author }}
+                        </p>
+                        <div v-if="book.genres && book.genres.length" class="flex flex-wrap gap-1 mb-1">
+                            <span
+                                v-for="genre in book.genres"
+                                :key="genre.id"
+                                class="inline-block bg-white/30 text-white text-[10px] px-2 py-[2px] rounded-full border border-white/50"
+                                style="backdrop-filter: blur(4px); text-shadow: none;"
+                            >
+                                {{ genre.name }}
+                            </span>
+                        </div>
+                        <p v-if="book.description" class="text-xs text-gray-400 mt-1" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.85);">
+                            {{ book.description.slice(0, 60) }}...
+                        </p>
                     </div>
-                    <p class="text-sm mt-2 text-gray-700">{{ book.description }}</p>
-
-                    <button
-                        class="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                        @click="inspectBook(book.id)"
-                    >
-                        Apskatīt
-                    </button>
                 </div>
             </div>
 
-            <p v-else class="text-gray-500 text-center">Notiek ielāde...</p>
+            <p v-else class="text-gray-500 text-center">Nav atrastu grāmatu.</p>
         </main>
     </div>
 </template>
@@ -129,6 +128,7 @@ export default {
             direction: 'asc',
             sidebarOpen: true,
             genresOpen: true,
+            searchQuery: '',
         };
     },
     mounted() {
@@ -137,23 +137,33 @@ export default {
         });
         this.fetchBooks();
 
-        // Automātiski aizver sidebar mobilajās ierīcēs
         if (window.innerWidth < 768) {
             this.sidebarOpen = false;
         }
     },
     methods: {
         fetchBooks() {
-            axios
-                .get('/get/all/books', {
-                    params: {
-                        sort: this.sortBy,
-                        direction: this.direction,
-                        genres: this.selectedGenres,
-                    },
-                })
+            const query = new URLSearchParams(window.location.search).get('q') || '';
+            this.searchQuery = query;
+
+            axios.get('/get/all/books', {
+                params: {
+                    sort: this.sortBy,
+                    direction: this.direction,
+                    genres: this.selectedGenres,
+                },
+            })
                 .then((response) => {
-                    this.books = response.data;
+                    let allBooks = response.data;
+
+                    if (query) {
+                        allBooks = allBooks.filter(book =>
+                            book.title.toLowerCase().includes(query.toLowerCase()) ||
+                            book.author.toLowerCase().includes(query.toLowerCase())
+                        );
+                    }
+
+                    this.books = allBooks;
                 })
                 .catch((error) => {
                     console.error('Kļūda ielādējot grāmatas:', error);
@@ -162,6 +172,15 @@ export default {
         inspectBook(id) {
             this.$inertia.visit(`/book/${id}`);
         },
+        toggleGenre(id) {
+            if (this.selectedGenres.includes(id)) {
+                this.selectedGenres = this.selectedGenres.filter(g => g !== id);
+            } else {
+                this.selectedGenres.push(id);
+            }
+            this.fetchBooks();
+        }
+
     },
 };
 </script>

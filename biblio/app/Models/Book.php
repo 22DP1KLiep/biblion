@@ -22,6 +22,12 @@ class Book extends Model
         return $this->belongsToMany(Genre::class);
     }
 
+    public function folders()
+    {
+        return $this->belongsToMany(Folder::class);
+    }
+
+
 
 
 }

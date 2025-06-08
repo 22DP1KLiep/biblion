@@ -39,7 +39,7 @@ const user = page.props.auth.user;
         <ul>
             <li><a href="/gramatas">Grāmatas</a></li>
             <li><a href="/kabinets">Mans kabinets</a></li>
-            <li v-if="!user"><a href="/login">Ienākt</a></li>
+            <li v-if="!user"><a href="/auth">Ienākt</a></li>
             <li v-else>
                 <Link href="/logout" method="post" as="button" class="logout-button">Iziet</Link>
             </li>
@@ -67,7 +67,8 @@ const user = page.props.auth.user;
         <ul>
             <li><a href="/gramatas">Grāmatas</a></li>
             <li><a href="/kabinets">Mans kabinets</a></li>
-            <li v-if="!user"><a href="/login">Ienākt</a></li>
+            <li v-if="!user"><a href="/auth">Ienākt</a></li>
+
             <li v-else>
                 <Link href="/logout" method="post" as="button" class="logout-button">Iziet</Link>
             </li>
@@ -81,10 +82,13 @@ const user = page.props.auth.user;
     border: none;
     color: #ffffff;
     cursor: pointer;
-    padding: 4px 8px;
+    padding: 0 8px;
     font-size: 95%;
     font-weight: 400;
     border-radius: 5px;
+    line-height: 1.5;
+    vertical-align: middle;
+    display: inline-block;
 }
 .logout-button:hover {
     color: #e6722a;

@@ -48,4 +48,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(Feedback::class);
     }
+
+    public function folders()
+    {
+        return $this->hasMany(Folder::class);
+    }
+
+
 }

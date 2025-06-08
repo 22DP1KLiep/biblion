@@ -10,20 +10,22 @@ class GenreSeeder extends Seeder
     public function run(): void
     {
         $genres = [
-            'Klasika',
             'Fantāzija',
-            'Romāns',
-            'Vēsturisks',
-            'Psiholoģisks',
-            'Dzeja',
-            'Filozofisks',
-            'Stāsti',
+            'Piedzīvojumi',
             'Distopija',
-            'Maģiskais reālisms',
-            'Krimināls',
-            'Biogrāfija',
-            'Ģimenes drāma',
+            'Klasika',
+            'Vēsturiskais romāns',
             'Bērnu literatūra',
+            'Jauniešu literatūra',
+            'Psiholoģisks romāns',
+            'Dzeja',
+            'Romantika',
+            'Detektīvs',
+            'Humors',
+            'Filozofija',
+            'Biogrāfija',
+            'Trilleris',
+            'Dramatisks romāns',
         ];
 
         foreach ($genres as $name) {
