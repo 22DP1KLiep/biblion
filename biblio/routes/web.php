@@ -11,6 +11,8 @@ use App\Http\Controllers\RatingController;
 use App\Http\Controllers\FolderController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\GoogleBooksController;
+
 
 // Publiskās lapas (Vue)
 Route::get('/', fn() => Inertia::render('HomeView'))->name('home');
@@ -65,4 +67,12 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/folders/{folder}/books', [FolderController::class, 'addBook']);
     Route::delete('/folders/{folder}/books/{book}', [FolderController::class, 'removeBook']);
     Route::delete('/folders/{folder}', [FolderController::class, 'destroy']);
+});
+
+// Publisks – meklēšana Google Books (LV, var filtrēt free-ebooks)
+Route::get('/google-books/search', [GoogleBooksController::class, 'search']);
+
+// Tikai autorizētiem – importēt izvēlēto grāmatu savā DB
+Route::middleware(['auth'])->group(function () {
+    Route::post('/google-books/import', [GoogleBooksController::class, 'import']);
 });

@@ -118,7 +118,7 @@ import { router, usePage } from '@inertiajs/vue3'
 import axios from 'axios'
 
 import Navbar from '@/Components/Navbar.vue'
-import Footer from '@/Components/Footer.vue'
+// import Footer from '@/Components/Footer.vue'
 import BookCard from '@/Components/BookCard.vue'
 
 const page = usePage()

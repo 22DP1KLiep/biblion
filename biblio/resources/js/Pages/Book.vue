@@ -7,10 +7,11 @@
                 <!-- Grāmatas attēls un vērtējums -->
                 <div class="w-full lg:w-1/3 flex flex-col items-center">
                     <img
-                        :src="book.image ? `/${book.image}` : 'https://via.placeholder.com/300'"
-                        alt="Book cover"
-                        class="w-full h-auto object-cover rounded-lg shadow mb-4"
+                    :src="imageUrl"
+                    alt="Book cover"
+                    class="w-full h-auto object-cover rounded-lg shadow mb-4"
                     />
+
                     <div v-if="$page.props.auth.user" class="flex flex-col items-center mt-4">
                         <div class="flex items-center space-x-1">
                             <label v-for="n in 5" :key="n" class="cursor-pointer transition-transform hover:scale-110">
@@ -330,10 +331,18 @@ export default {
             this.fetchUserRating();
         }
     },
+
+    // 👇 PIEVIENO ŠEIT
+    computed: {
+        imageUrl() {
+            const img = this.book?.image;
+            if (!img) return 'https://via.placeholder.com/300';
+            // ja bilde ir no Google (pilns URL), atgriežam to tieši
+            return img.startsWith('http') ? img : `/${img}`;
+        }
+    }
 };
 </script>
-
-
 <style>
 select:disabled {
     background-color: #f3f4f6;

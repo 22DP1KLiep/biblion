@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import Navbar from "../Components/navbar.vue";
+import Navbar from "../Components/Navbar.vue";
 import Footer from "../Components/footer.vue";
 import ShowBook from "@/Components/showBook.vue";
 import Partners from "@/Components/Partners.vue";

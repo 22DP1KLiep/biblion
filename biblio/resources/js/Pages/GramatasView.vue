@@ -1,24 +1,18 @@
 <template>
-    <Navbar />
-    <SortableBooks />
-<!--    <showallbooks/>-->
-<!--    <Partners />-->
-    <Footer />
+  <Navbar />
+  <!-- <SortableBooks /> -->
+  <GoogleBookSearch />
+  <Footer />
 </template>
-<script setup lang="ts">
-import Navbar from "@/Components/navbar.vue";
-import Footer from "@/Components/footer.vue";
-import Showallbooks from "@/Components/showallbooks.vue";
-import Partners from "@/Components/Partners.vue";
-import SortableBooks from '@/Components/SortableBooks.vue'
 
-
+<script setup>
+import Navbar from '@/Components/Navbar.vue'
+import Footer from '@/Components/footer.vue'
+// import SortableBooks from '@/Components/SortableBooks.vue'
+import GoogleBookSearch from '@/Components/GoogleBookSearch.vue'
 </script>
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap');
-
-* {
-    font-family: 'Poppins', sans-serif;
-}
+* { font-family: 'Poppins', sans-serif; }
 </style>
