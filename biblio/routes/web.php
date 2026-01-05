@@ -48,6 +48,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::patch('/admin/users/{user}/restrict', [\App\Http\Controllers\Admin\UserController::class, 'restrict']);
 
+        Route::patch('/admin/users/{user}/unrestrict', [\App\Http\Controllers\Admin\UserController::class, 'removeRestriction']);
 
     });
 

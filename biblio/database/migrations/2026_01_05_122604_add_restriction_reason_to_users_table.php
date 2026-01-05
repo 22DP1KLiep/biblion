@@ -10,19 +10,23 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {
-        Schema::table('users', function (Blueprint $table) {
-            //
-        });
-    }
+{
+    Schema::table('users', function (Blueprint $table) {
+        $table->text('restriction_reason')
+              ->nullable()
+              ->after('restricted_until');
+    });
+}
+
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
-    {
-        Schema::table('users', function (Blueprint $table) {
-            //
-        });
-    }
+{
+    Schema::table('users', function (Blueprint $table) {
+        $table->dropColumn('restriction_reason');
+    });
+}
+
 };

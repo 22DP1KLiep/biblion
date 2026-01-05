@@ -50,19 +50,27 @@ class UserController extends Controller
         return back();
     }
 
-    public function restrict(User $user, \Illuminate\Http\Request $request)
+    public function restrict(User $user, Request $request)
 {
-    $days = (int) $request->days;
+    $validated = $request->validate([
+        'days' => 'required|integer|in:1,3,7,30',
+        'reason' => 'nullable|string|max:1000',
+    ]);
 
-    if (!in_array($days, [1, 7, 30])) {
-    abort(422);
-}
-
-
-    $user->restricted_until = Carbon::now()->addDays($days);
+    $user->restricted_until = now()->addDays($validated['days']);
+    $user->restriction_reason = $validated['reason'];
     $user->save();
 
     return back(303);
-
 }
+
+public function removeRestriction(User $user)
+{
+    $user->restricted_until = null;
+    $user->restriction_reason = null;
+    $user->save();
+
+    return back(303);
+}
+
 }

@@ -1,182 +1,236 @@
 <script setup>
 import { ref, computed } from 'vue'
-import { router, usePage } from '@inertiajs/vue3'
+import { usePage, router } from '@inertiajs/vue3'
 import AdminLayout from '@/Layouts/AdminLayout.vue'
 
+// ===== PAGE PROPS =====
+const page = usePage()
 
-const props = defineProps({
-    users: Array
+const users = computed(() => {
+    return Array.isArray(page.props.users) ? page.props.users : []
 })
 
-const page = usePage()
-const currentUserId = page.props.auth.user.id
-
+// ===== SEARCH (ja vēlāk gribi filtrēt) =====
 const search = ref('')
 
 const filteredUsers = computed(() => {
-    if (!search.value) return props.users
-    return props.users.filter(u =>
-        u.name.toLowerCase().includes(search.value.toLowerCase()) ||
-        u.email.toLowerCase().includes(search.value.toLowerCase())
+    if (!search.value) return users.value
+
+    return users.value.filter(user =>
+        user.email.toLowerCase().includes(search.value.toLowerCase())
     )
 })
 
-const changeRole = (user, role) => {
-    router.patch(`/admin/users/${user.id}/role`, { role })
+// ===== RESTRICT MODAL STATE =====
+const showRestrictModal = ref(false)
+const selectedUser = ref(null)
+const restrictDays = ref(7)
+const restrictReason = ref('')
+
+// ===== OPEN / CLOSE MODAL =====
+const openRestrictModal = (user) => {
+    selectedUser.value = user
+    restrictDays.value = 7
+    restrictReason.value = ''
+    showRestrictModal.value = true
 }
 
-const deleteUser = (user) => {
-    if (confirm(`Dzēst lietotāju "${user.name}"?`)) {
-        router.delete(`/admin/users/${user.id}`)
-    }
+const closeRestrictModal = () => {
+    showRestrictModal.value = false
+    selectedUser.value = null
 }
 
-const restrictUser = (userId, days) => {
-    if (!confirm(`Restrict this user for ${days} days?`)) return
+// ===== CONFIRM RESTRICTION =====
+const confirmRestriction = () => {
+    if (!selectedUser.value) return
 
-    router.patch(`/admin/users/${userId}/restrict`, { days }, {
-        preserveScroll: true,
-        onSuccess: () => {
-            router.reload({ only: ['users'] })
+    router.patch(
+        `/admin/users/${selectedUser.value.id}/restrict`,
+        {
+            days: restrictDays.value,
+            reason: restrictReason.value,
+        },
+        {
+            preserveScroll: true,
+            onSuccess: () => {
+                closeRestrictModal()
+                router.reload({ only: ['users'] })
+            },
         }
-    })
+    )
 }
 
+// ===== REMOVE RESTRICTION =====
+const removeRestriction = () => {
+    if (!selectedUser.value) return
+
+    if (!confirm(`Remove restriction for ${selectedUser.value.email}?`)) return
+
+    router.patch(
+        `/admin/users/${selectedUser.value.id}/unrestrict`,
+        {},
+        {
+            preserveScroll: true,
+            onSuccess: () => {
+                closeRestrictModal()
+                router.reload({ only: ['users'] })
+            },
+        }
+    )
+}
 </script>
 
 <template>
     <AdminLayout>
-    <div class="min-h-screen bg-[#f0f4f8]">
-        <div class="container mx-auto p-6">
-            <!-- Header -->
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
-                <div>
-                    <h1 class="text-2xl font-bold text-[#213555]">
-                        Users Management
-                    </h1>
-                    <p class="text-sm text-gray-600">
-                        Manage user accounts and permissions
-                    </p>
-                </div>
+        <div class="min-h-screen bg-[#f0f4f8]">
+            <div class="container mx-auto p-6">
+                <h1 class="text-2xl font-bold mb-6 text-[#213555]">
+                    Users
+                </h1>
 
-                <button
-                    class="bg-[#213555] hover:bg-[#3E5879] text-white px-4 py-2 rounded-lg shadow"
-                >
-                    ➕ Add User
-                </button>
-            </div>
-
-            <!-- Search -->
-            <div class="mb-4">
+                <!-- SEARCH -->
                 <input
                     v-model="search"
                     type="text"
-                    placeholder="Search users..."
-                    class="w-full sm:w-96 px-4 py-2 rounded-lg border border-gray-300
-                           focus:ring-2 focus:ring-[#213555] focus:outline-none"
+                    placeholder="Search by email..."
+                    class="mb-4 w-full max-w-sm border rounded px-3 py-2"
                 />
-            </div>
 
-            <!-- Table -->
-            <div class="bg-white rounded-xl shadow overflow-x-auto">
-                <table class="w-full text-sm">
-                    <thead class="bg-[#f5f7fa] text-[#213555]">
-                        <tr>
-                            <th class="text-left px-4 py-3">Name</th>
-                            <th class="text-left px-4 py-3">Email</th>
-                            <th class="text-left px-4 py-3">Role</th>
-                            <th class="text-left px-4 py-3">Status</th>
-                            <th class="text-left px-4 py-3">Actions</th>
-                        </tr>
-                    </thead>
+                <!-- TABLE -->
+                <div class="bg-white rounded-lg shadow overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead class="bg-gray-100 text-left">
+                            <tr>
+                                <th class="p-3">Email</th>
+                                <th class="p-3">Role</th>
+                                <th class="p-3">Status</th>
+                                <th class="p-3 text-right">Restrict</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                v-for="user in filteredUsers"
+                                :key="user.id"
+                                class="border-t"
+                            >
+                                <td class="p-3">{{ user.email }}</td>
+                                <td class="p-3">{{ user.role }}</td>
+                                <td class="p-3">
+                                    <span
+                                        v-if="user.restricted_until"
+                                        class="text-orange-600 font-medium"
+                                    >
+                                        Restricted
+                                    </span>
+                                    <span
+                                        v-else
+                                        class="text-green-600 font-medium"
+                                    >
+                                        Active
+                                    </span>
+                                </td>
+                                <td class="p-3 text-right">
+                                    <button
+                                        class="text-xs text-orange-600 hover:underline"
+                                        @click="openRestrictModal(user)"
+                                    >
+                                        Manage
+                                    </button>
+                                </td>
+                            </tr>
 
-                    <tbody>
-                        <tr
-                            v-for="user in filteredUsers"
-                            :key="user.id"
-                            class="border-t hover:bg-gray-50 transition"
-                        >
-                            <td class="px-4 py-3 font-medium">
-                                {{ user.name }}
-                            </td>
-
-                            <td class="px-4 py-3 text-gray-600">
-                                {{ user.email }}
-                            </td>
-
-                            <!-- Role -->
-                            <td class="px-4 py-3">
-                                <select
-                                    :value="user.role"
-                                    @change="changeRole(user, $event.target.value)"
-                                    :disabled="user.id === currentUserId"
-                                    class="px-2 py-1 rounded-md text-xs font-medium border border-gray-300
-                                           focus:ring-1 focus:ring-[#213555]"
-                                    :class="user.role === 'admin'
-                                        ? 'bg-green-100 text-green-700'
-                                        : 'bg-blue-100 text-blue-700'"
-                                >
-                                    <option value="user">User</option>
-                                    <option value="admin">Admin</option>
-                                </select>
-                            </td>
-
-                            <!-- Status -->
-                            <td class="px-4 py-3">
-                                <span
-                                    v-if="user.restricted_until && new Date(user.restricted_until) > new Date()"
-                                    class="px-3 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-700"
-                                >
-                                    Restricted
-                                </span>
-
-                                <span
-                                    v-else
-                                    class="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700"
-                                >
-                                    Active
-                                </span>
-                            </td>
-
-                            <!-- Actions -->
-                            <td class="px-4 py-3 flex gap-3 text-lg">
-                                <button title="View">👁️</button>
-                                <button title="Edit">✏️</button>
-                                <button
-                                    v-if="user.id !== currentUserId"
-                                    @click="deleteUser(user)"
-                                    title="Delete"
-                                    class="text-red-500 hover:text-red-700"
-                                >
-                                    🗑️
-                                </button>
-                                <button
-                                    class="text-xs text-orange-600 hover:underline"
-                                    @click="restrictUser(user.id, 1)"
-                                >
-                                    Restrict 1d
-                                </button>
-
-                                <button
-                                    class="text-xs text-orange-600 hover:underline ml-2"
-                                    @click="restrictUser(user.id, 7)"
-                                >
-                                    Restrict 7d
-                                </button>
-
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <div
-                    v-if="!filteredUsers.length"
-                    class="p-6 text-center text-gray-500"
-                >
-                    No users found.
+                            <tr v-if="!filteredUsers.length">
+                                <td colspan="4" class="p-6 text-center text-gray-500">
+                                    No users found.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-    </div>
+
+        <!-- RESTRICT MODAL -->
+        <div
+            v-if="showRestrictModal"
+            class="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
+        >
+            <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
+                <h2 class="text-lg font-bold mb-2">
+                    Restrict user
+                </h2>
+
+                <p class="text-sm mb-2">
+                    User: <strong>{{ selectedUser?.email }}</strong>
+                </p>
+
+                <p
+                    v-if="selectedUser?.restricted_until"
+                    class="mb-2 text-sm text-orange-700"
+                >
+                    ⚠️ User is currently restricted
+                </p>
+
+                <p
+                    v-if="selectedUser?.restriction_reason"
+                    class="mb-4 text-sm text-gray-600"
+                >
+                    <strong>Reason:</strong> {{ selectedUser.restriction_reason }}
+                </p>
+
+                <!-- FORM (TIKAI JA NAV RESTRICTED) -->
+                <div v-if="!selectedUser?.restricted_until">
+                    <div class="mb-4">
+                        <label class="block text-sm mb-1">Days</label>
+                        <select
+                            v-model="restrictDays"
+                            class="w-full border rounded px-3 py-2"
+                        >
+                            <option :value="1">1 day</option>
+                            <option :value="3">3 days</option>
+                            <option :value="7">7 days</option>
+                            <option :value="30">30 days</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-sm mb-1">Reason</label>
+                        <textarea
+                            v-model="restrictReason"
+                            class="w-full border rounded px-3 py-2"
+                            rows="3"
+                        ></textarea>
+                    </div>
+                </div>
+
+                <!-- ACTIONS -->
+                <div class="flex justify-between items-center mt-4">
+                    <button
+                        v-if="selectedUser?.restricted_until"
+                        class="px-4 py-2 text-sm rounded bg-red-600 text-white hover:bg-red-700"
+                        @click="removeRestriction"
+                    >
+                        Remove restriction
+                    </button>
+
+                    <div class="flex gap-2 ml-auto">
+                        <button
+                            class="px-3 py-2 border rounded"
+                            @click="closeRestrictModal"
+                        >
+                            Cancel
+                        </button>
+
+                        <button
+                            v-if="!selectedUser?.restricted_until"
+                            class="px-3 py-2 bg-orange-600 text-white rounded hover:bg-orange-700"
+                            @click="confirmRestriction"
+                        >
+                            Confirm restriction
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </AdminLayout>
 </template>
