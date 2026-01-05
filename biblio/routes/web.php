@@ -12,6 +12,8 @@ use App\Http\Controllers\FolderController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\GoogleBooksController;
+use App\Http\Controllers\Admin\UserController;
+
 
 
 // Publiskās lapas (Vue)
@@ -27,9 +29,30 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('login');
 });
 
-Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/admin', fn() => Inertia::render('AdminPanelView'))->name('admin');
+Route::middleware(['auth'])->group(function () {
+
+    Route::middleware(['admin'])->group(function () {
+
+        Route::get('/admin', fn() => Inertia::render('AdminPanelView'))
+            ->name('admin');
+
+        // 👤 USER MANAGEMENT
+        Route::get('/admin/users', [UserController::class, 'index'])
+            ->name('admin.users.index');
+
+        Route::patch('/admin/users/{user}/role', [UserController::class, 'updateRole'])
+            ->name('admin.users.role');
+
+        Route::delete('/admin/users/{user}', [UserController::class, 'destroy'])
+            ->name('admin.users.destroy');
+
+        Route::patch('/admin/users/{user}/restrict', [\App\Http\Controllers\Admin\UserController::class, 'restrict']);
+
+
+    });
+
 });
+
 
 // Izrakstīšanās
 Route::post('/logout', function () {

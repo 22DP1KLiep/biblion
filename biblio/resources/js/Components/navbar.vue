@@ -16,7 +16,7 @@ const handleSearch = () => {
   }
 }
 
-// Inertia page props (guarded)
+// Inertia auth user
 const page = usePage()
 const user = page?.props?.auth?.user
 </script>
@@ -27,7 +27,7 @@ const user = page?.props?.auth?.user
       <h1><a href="/">Biblio</a></h1>
     </div>
 
-    <!-- Meklēšana (desktop) -->
+    <!-- Search (desktop) -->
     <form @submit.prevent="handleSearch" class="search-form">
       <input
         type="text"
@@ -37,16 +37,35 @@ const user = page?.props?.auth?.user
       />
     </form>
 
-    <!-- Galvenā izvēlne -->
+    <!-- Desktop menu -->
     <ul>
       <li><a href="/gramatas">Grāmatas</a></li>
       <li><a href="/kabinets">Mans kabinets</a></li>
-      <li v-if="!user"><a href="/auth">Ienākt</a></li>
+
+      <!-- Admin panel button -->
+      <li v-if="user && user.role === 'admin'">
+        <Link href="/admin" class="admin-link">
+          Admin
+        </Link>
+      </li>
+
+      <li v-if="!user">
+        <a href="/auth">Ienākt</a>
+      </li>
+
       <li v-else>
-        <Link href="/logout" method="post" as="button" class="logout-button">Iziet</Link>
+        <Link
+          href="/logout"
+          method="post"
+          as="button"
+          class="logout-button"
+        >
+          Iziet
+        </Link>
       </li>
     </ul>
 
+    <!-- Hamburger -->
     <div class="hamburger" @click="toggleNav">
       <span class="line"></span>
       <span class="line"></span>
@@ -54,7 +73,7 @@ const user = page?.props?.auth?.user
     </div>
   </nav>
 
-  <!-- Mobilā izvēlne -->
+  <!-- Mobile menu -->
   <div class="menubar" :class="{ active: isMenuActive }">
     <form @submit.prevent="handleSearch" class="search-form-mobile">
       <input
@@ -68,57 +87,176 @@ const user = page?.props?.auth?.user
     <ul>
       <li><a href="/gramatas">Grāmatas</a></li>
       <li><a href="/kabinets">Mans kabinets</a></li>
-      <li v-if="!user"><a href="/auth">Ienākt</a></li>
+
+      <li v-if="user && user.role === 'admin'">
+        <Link href="/admin">Admin panelis</Link>
+      </li>
+
+      <li v-if="!user">
+        <a href="/auth">Ienākt</a>
+      </li>
+
       <li v-else>
-        <Link href="/logout" method="post" as="button" class="logout-button">Iziet</Link>
+        <Link
+          href="/logout"
+          method="post"
+          as="button"
+          class="logout-button"
+        >
+          Iziet
+        </Link>
       </li>
     </ul>
   </div>
 </template>
 
 <style scoped>
+/* Logout button */
 .logout-button {
-  background: transparent; border: none; color: #ffffff; cursor: pointer;
-  padding: 0 8px; font-size: 95%; font-weight: 400; border-radius: 5px;
-  line-height: 1.5; vertical-align: middle; display: inline-block;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 0 8px;
+  font-size: 95%;
+  font-weight: 400;
+  border-radius: 5px;
 }
-.logout-button:hover { color: #e6722a; }
+.logout-button:hover {
+  color: #e6722a;
+}
 
-.search-form { margin-left: auto; display: flex; align-items: center; }
-.search-input { padding: 5px 10px; border-radius: 5px; border: none; font-size: 90%; outline: none; }
-.search-input:focus { border: 1px solid #e6722a; }
+/* Admin button */
+.admin-link {
+  text-decoration: none;
+  color: #fff;
+  font-size: 95%;
+  font-weight: 400;
+  padding: 4px 8px;
+  border-radius: 5px;
+}
 
-.search-form-mobile { width: 80%; margin: 10px auto 20px auto; text-align: center; }
-.search-input-mobile { width: 100%; padding: 8px 12px; font-size: 90%; border-radius: 5px; border: 1px solid #ccc; outline: none; }
 
-.menubar ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-.menubar li { margin: 10px 0; }
+.admin-link:hover {
+  color: #e6722a;
+}
 
+
+/* Search */
+.search-form {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+.search-input {
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: none;
+  font-size: 90%;
+  outline: none;
+}
+/* .search-input:focus {
+  border: 1px solid #e6722a;
+} */
+
+.search-form-mobile {
+  width: 80%;
+  margin: 10px auto 20px auto;
+  text-align: center;
+}
+.search-input-mobile {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 90%;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  outline: none;
+}
+
+/* Nav */
 nav {
   background-color: rgb(33, 53, 85);
-  padding: 5px 2%; display: flex; justify-content: space-between; align-items: center;
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
-  z-index: 1; height: 55px;
+  padding: 5px 2%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 55px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px,
+              rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
 }
-nav .logo { display: flex; align-items: center; }
-nav .logo h1 { font-size: 1.5rem; background: white; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-nav ul { display: flex; list-style: none; }
-nav ul li { margin-left: 0.5rem; }
-nav ul li a { text-decoration: none; color: #fff; font-size: 95%; font-weight: 400; padding: 4px 8px; border-radius: 5px; }
-nav ul li a:hover { color: #e6722a; }
+nav .logo h1 {
+  font-size: 1.5rem;
+  background: white;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+nav ul {
+  display: flex;
+  list-style: none;
+}
+nav ul li {
+  margin-left: 0.5rem;
+}
+nav ul li a {
+  text-decoration: none;
+  color: #fff;
+  font-size: 95%;
+  padding: 4px 8px;
+  border-radius: 5px;
+}
+nav ul li a:hover {
+  color: #e6722a;
+}
 
-.hamburger { display: none; cursor: pointer; }
-.hamburger .line { width: 25px; height: 2px; background: #fff; display: block; margin: 7px auto; transition: all .3s ease-in-out; }
+/* Hamburger */
+.hamburger {
+  display: none;
+  cursor: pointer;
+}
+.hamburger .line {
+  width: 25px;
+  height: 2px;
+  background: #fff;
+  display: block;
+  margin: 7px auto;
+}
 
+/* Mobile menu */
 .menubar {
-  position: absolute; top: 0; left: -60%; display: flex; justify-content: center; align-items: flex-start;
-  width: 60%; height: 100vh; padding: 20% 0; background: #fff; transition: all .5s ease-in; z-index: 2;
+  position: absolute;
+  top: 0;
+  left: -60%;
+  width: 60%;
+  height: 100vh;
+  padding: 20% 0;
+  background: #fff;
+  transition: all .5s ease-in;
+  z-index: 2;
 }
-.menubar.active { left: 0; box-shadow: rgba(149,157,165,0.2) 0px 8px 24px; }
+.menubar.active {
+  left: 0;
+}
+.menubar ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.menubar li {
+  margin: 10px 0;
+}
 
+/* Responsive */
 @media screen and (max-width: 790px) {
-  .hamburger { display: block; }
-  nav ul { display: none; }
-  .search-form { display: none; }
+  .hamburger {
+    display: block;
+  }
+  nav ul {
+    display: none;
+  }
+  .search-form {
+    display: none;
+  }
 }
 </style>

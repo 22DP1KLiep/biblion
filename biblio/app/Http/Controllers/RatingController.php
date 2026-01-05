@@ -15,6 +15,14 @@ class RatingController extends Controller
 
     public function store(Request $request, $bookId)
     {
+        //Validate if user is restricted
+        if (auth()->user()->isRestricted()) {
+        return response()->json([
+            'message' => 'Tava konta aktivitātes ir ierobežotas līdz ' 
+                . auth()->user()->restrictionEndsAt()
+        ], 403);
+    }
+    
         $request->validate([
             'rating' => 'required|integer|min:1|max:5',
         ]);

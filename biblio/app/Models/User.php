@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Carbon\Carbon;
+
 
 class User extends Authenticatable
 {
@@ -53,6 +55,26 @@ class User extends Authenticatable
     {
         return $this->hasMany(Folder::class);
     }
+
+        /**
+     * Pārbauda, vai lietotājs ir ierobežots (read-only)
+     */
+    public function isRestricted(): bool
+    {
+        return $this->restricted_until !== null
+            && Carbon::now()->lessThan($this->restricted_until);
+    }
+
+    /**
+     * Atgriež datumu, līdz kuram lietotājs ir ierobežots (UI vajadzībām)
+     */
+    public function restrictionEndsAt(): ?string
+    {
+        return $this->restricted_until
+            ? Carbon::parse($this->restricted_until)->format('d.m.Y H:i')
+            : null;
+    }
+
 
 
 }

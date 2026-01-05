@@ -12,20 +12,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Ja vēlies saglabāt šo user seeder, vari atstāt
-        User::factory()->create([
-            'name' => 'Test User',
-            'username' => 'testuser', // ← ✅ ŠEIT!
-            'email' => 'test@example.com',
-        ]);
+        $this->call(UserSeeder::class);
 
         // ✅ Šeit pievieno savus seederus
         $this->call([
             GenreSeeder::class,
             BooksTableSeeder::class,
+            FolderSeeder::class,
         ]);
 
-        $this->call(FolderSeeder::class);
+       
 
 
     }

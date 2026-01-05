@@ -264,15 +264,24 @@ export default {
                 });
         },
         saveRating() {
-            if (!this.selectedRating) return alert("Lūdzu izvēlies vērtējumu!");
-            axios.post(`/books/${this.book.id}/ratings`, { rating: this.selectedRating })
-                .then(() => {
-                    this.rating = this.selectedRating;
-                    this.ratingSaved = true;
-                    this.fetchRatings();
-                    setTimeout(() => this.ratingSaved = false, 3000);
-                });
-        },
+    if (!this.selectedRating) return alert("Lūdzu izvēlies vērtējumu!");
+
+    axios.post(`/books/${this.book.id}/ratings`, { rating: this.selectedRating })
+        .then(() => {
+            this.rating = this.selectedRating;
+            this.ratingSaved = true;
+            this.fetchRatings();
+            setTimeout(() => this.ratingSaved = false, 3000);
+        })
+        .catch(error => {
+            if (error.response && error.response.status === 403) {
+                alert(error.response.data.message);
+            } else {
+                console.error(error);
+            }
+        });
+},
+
         fetchComments() {
             axios.get(`/books/${this.id}/comments`).then(res => this.comments = res.data);
         },
@@ -289,13 +298,23 @@ export default {
         },
 
         submitFeedback() {
-            if (!this.comment) return alert("Lūdzu ieraksti komentāru!");
-            axios.post(`/books/${this.book.id}/comments`, { comment: this.comment }).then(() => {
-                this.fetchComments();
-                this.comment = '';
-                this.visibleCommentsCount = Math.max(this.visibleCommentsCount, this.comments.length);
-            });
-        },
+    if (!this.comment) return alert("Lūdzu ieraksti komentāru!");
+
+    axios.post(`/books/${this.book.id}/comments`, { comment: this.comment })
+        .then(() => {
+            this.fetchComments();
+            this.comment = '';
+            this.visibleCommentsCount = Math.max(this.visibleCommentsCount, this.comments.length);
+        })
+        .catch(error => {
+            if (error.response && error.response.status === 403) {
+                alert(error.response.data.message);
+            } else {
+                console.error(error);
+            }
+        });
+},
+
 
         confirmDelete(commentId) {
             this.commentToDeleteId = commentId;

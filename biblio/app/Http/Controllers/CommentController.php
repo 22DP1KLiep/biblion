@@ -14,6 +14,14 @@ class CommentController extends Controller
 
     public function store(Request $request, $bookId)
     {
+        //Validate if user is restricted
+        if (auth()->user()->isRestricted()) {
+        return response()->json([
+            'message' => 'Tava konta aktivitātes ir ierobežotas līdz ' 
+                . auth()->user()->restrictionEndsAt()
+        ], 403);
+    }
+
         $request->validate([
             'comment' => 'required|string|max:1000',
         ]);
