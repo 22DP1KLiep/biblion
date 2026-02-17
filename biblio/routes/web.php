@@ -13,6 +13,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\GoogleBooksController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\ChatController;
 
 
 
@@ -72,7 +73,12 @@ Route::get('/books/{book}/comments', [CommentController::class, 'index']);
 Route::get('/api/genres', fn() => \App\Models\Genre::all());
 
 // Kabinets – pieejams visiem (Vue pats parāda paziņojumu, ja nav ielogots)
-Route::get('/kabinets', fn() => Inertia::render('KabinetsView'))->name('kabinets');
+// Route::get('/kabinets', fn() => Inertia::render('KabinetsView'))->name('kabinets');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/kabinets', function () {
+        return Inertia::render('KabinetsView');
+    });
+});
 
 // Tikai autorizētiem lietotājiem
 Route::middleware(['auth'])->group(function () {
@@ -100,3 +106,26 @@ Route::get('/google-books/search', [GoogleBooksController::class, 'search']);
 Route::middleware(['auth'])->group(function () {
     Route::post('/google-books/import', [GoogleBooksController::class, 'import']);
 });
+
+Route::middleware('auth')->group(function () {
+
+    Route::get('/chats', [ChatController::class, 'index'])
+        ->name('chats.index');
+
+    // 👇 ŠIEM JĀBŪT PIRMS {conversation}
+    Route::get('/chats/new', [ChatController::class, 'new'])
+        ->name('chats.new');
+
+    Route::get('/chats/start/{user}', [ChatController::class, 'start'])
+        ->name('chats.start');
+
+    // 👇 ŠIS VIENMĒR BEIGĀS
+    Route::get('/chats/{conversation}', [ChatController::class, 'show'])
+        ->name('chats.show');
+
+    Route::post('/chats/{conversation}/messages', [ChatController::class, 'storeMessage'])
+        ->name('chats.messages.store');
+
+});
+
+

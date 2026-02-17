@@ -50,27 +50,34 @@ class UserController extends Controller
         return back();
     }
 
-    public function restrict(User $user, Request $request)
-{
-    $validated = $request->validate([
-        'days' => 'required|integer|in:1,3,7,30',
-        'reason' => 'nullable|string|max:1000',
-    ]);
+    public function restrict(Request $request, User $user)
+    {
+        $request->validate([
+            'days' => 'required|integer|min:1',
+            'reason' => 'nullable|string',
+        ]);
 
-    $user->restricted_until = now()->addDays($validated['days']);
-    $user->restriction_reason = $validated['reason'];
-    $user->save();
+        $user->update([
+            'status' => 'restricted',
+            'restricted_until' => now()->addDays($request->days),
+            'restriction_reason' => $request->reason,
+        ]);
 
-    return back(303);
-}
+        return back();
+    }
 
-public function removeRestriction(User $user)
-{
-    $user->restricted_until = null;
-    $user->restriction_reason = null;
-    $user->save();
 
-    return back(303);
-}
+    public function removeRestriction(User $user)
+    {
+        $user->update([
+            'status' => 'active',
+            'restricted_until' => null,
+            'restriction_reason' => null,
+        ]);
+
+        return back();
+    }
+
+
 
 }

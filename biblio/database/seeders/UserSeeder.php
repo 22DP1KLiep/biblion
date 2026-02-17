@@ -22,7 +22,7 @@ class UserSeeder extends Seeder
                 'name' => 'Anna Kalniņa',
                 'username' => 'anna',
                 'email' => 'anna@test.com',
-                'password' => Hash::make('password'),
+                'password' => Hash::make('passsword'),
                 'role' => 'user',
             ],
             [
